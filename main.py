@@ -53,4 +53,15 @@ if __name__ == "__main__":
     # test2()
     # test3()
     # test4()
-    test5()
+    # test5()
+
+    from PyQt6.QtWidgets import QApplication
+    from ui.MainWindow import MainWindow
+    import sys
+
+    app = QApplication(sys.argv) 
+
+    mw = MainWindow()
+    mw.show() 
+
+    app.exec()
