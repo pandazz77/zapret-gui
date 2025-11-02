@@ -1,5 +1,5 @@
-from zapret_provider import ZapretBinsProvider
-from strategy import StrategyProvider, Strategy
+from core.zapret_provider import ZapretBinsProvider
+from core.strategy import StrategyProvider, Strategy
 import subprocess
 import os
 import atexit

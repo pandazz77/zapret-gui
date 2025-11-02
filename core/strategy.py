@@ -26,3 +26,11 @@ class StrategyProvider(ABC):
     def load(self):
         with open(self.strategies_path,"r") as f:
             self.strategies = json.load(f)
+
+    @property
+    def available(self) -> bool:
+        return os.path.exists(self.strategies_path)
+    
+    @property
+    def names(self) -> list[str]:
+        return list(self.strategies.keys())
