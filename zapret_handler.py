@@ -10,7 +10,7 @@ class ZapretHandler:
     def __init__(self,bin:ZapretBinsProvider,strategy:StrategyProvider):
         self.bin = bin
         self.strategy = strategy
-        self.process = subprocess.Popen
+        self.process: subprocess.Popen = None
         atexit.register(self.stop)
 
     def start(self,strategy):

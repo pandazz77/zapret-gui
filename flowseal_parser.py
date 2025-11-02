@@ -61,6 +61,7 @@ def parse_strategy(strategy_raw:str,lists_path:str,bins_paths:str,gamefilter_fla
     strategy_raw = strategy_raw[strategy_raw.find('--'):]
     strategy_raw = strategy_raw.replace("^","")
     strategy_raw = strategy_raw.replace("\n","")
+    strategy_raw = strategy_raw.replace('"',"'")
 
     # replace vars
     strategy_raw = strategy_raw.replace(r"%GameFilter%",gamefilter)
