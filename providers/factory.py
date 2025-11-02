@@ -2,6 +2,7 @@
 from providers.flowseal_parser import FlowsealStrategyProvider, FlowsealBinsProvider
 from core.strategy import StrategyProvider
 from core.zapret_provider import ZapretBinsProvider
+from core.globals import APPDIR
 import os
 
 FLOWSEAL = "FLOWSEAL"
@@ -13,9 +14,6 @@ _bins_providers = {
 _strategy_providers = {
     FLOWSEAL: FlowsealStrategyProvider
 }
-
-APPDIR = os.path.join(os.environ['APPDATA'],"zapret_gui")
-os.makedirs(APPDIR,exist_ok=True)
 
 def GetBinsProvider(name:str) -> ZapretBinsProvider:
     path = os.path.join(APPDIR,"providers","bins",name)

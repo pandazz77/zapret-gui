@@ -28,16 +28,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for name in self.zapret.strategy.names:
             self.strategyCombo.addItem(name,name)
 
-        self.display_text("DISCONNECTED")
+        self.display_text("Disconnected")
 
     def display_text(self,txt:str):
         self.infoLabel.setText(txt)
 
     def on_switch_changed(self,state):
         if state:
+            self.display_text(f"Starting \"{self.choosen_strategy}\" strategy..")
             self.zapret.start(self.choosen_strategy)
         else:
             self.zapret.stop()
+            self.display_text("Disconnected")
 
     @property
     def choosen_strategy(self):

@@ -1,31 +1,58 @@
 from core.zapret_provider import ZapretBinsProvider
 from core.strategy import StrategyProvider, Strategy
 import subprocess
+import threading
 import os
 import atexit
 import requests
+import logging
+from enum import Enum
 
+class ZapretStatus(Enum):
+    STOPPED = 0,
+    STARTING = 1,
+    STARTED = 2
+
+def _default_status_hook(status:ZapretStatus):
+    print("New Zapret status:",status.name)
 
 class ZapretHandler:
     def __init__(self,bin:ZapretBinsProvider,strategy:StrategyProvider):
         self.bin = bin
         self.strategy = strategy
         self.process: subprocess.Popen = None
+        self.status_hook: callable = _default_status_hook
+        self.logger = logging.getLogger("ZapretHandler")
         atexit.register(self.stop)
 
     def start(self,strategy):
+        self.status_hook(ZapretStatus.STARTING)
         strategy: Strategy = self.strategy.strategies[strategy]
         instructions = strategy["instructions"]
-        print(instructions)
         self.process = subprocess.Popen(
             [self.bin.executable,*instructions],
-            cwd=os.path.dirname(self.bin.executable)
+            cwd=os.path.dirname(self.bin.executable),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
         )
+        self._stdout_hook = threading.Thread(target=self._process_stdout_hook,daemon=True)
+        self._stdout_hook.start()
+
+    def _process_stdout_hook(self):
+        for line in self.process.stdout:
+            line:str = line.rstrip('\n\r')
+            self.logger.debug(line)
+            if "capture is started" in line:
+                self.logger.info("started")
+                self.status_hook(ZapretStatus.STARTED)
+        self.logger.info("stopped")
 
     def stop(self):
         if self.process:
             self.process.terminate()
             self.process = None
+            self.status_hook(ZapretStatus.STOPPED)
 
     def blockcheck(self,retries=5) -> bool:
         print("blockchecking...")
