@@ -1,10 +1,10 @@
-import github_utils as github
+import core.github_utils as github
 import time
 import logging
 import os
 from pathlib import Path
-from strategy import Strategy, StrategyProvider
-from zapret_provider import ZapretBinsProvider
+from core.strategy import Strategy, StrategyProvider
+from core.zapret_provider import ZapretBinsProvider
 
 
 USERNAME = "Flowseal"

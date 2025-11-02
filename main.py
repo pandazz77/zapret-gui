@@ -1,5 +1,5 @@
 import os
-from flowseal_parser import download_bins, download_lists, parse_strategy, FlowsealBinsProvider, FlowsealStrategyProvider
+from providers.flowseal_parser import download_bins, download_lists, parse_strategy, FlowsealBinsProvider, FlowsealStrategyProvider
 import time
 
 
@@ -36,7 +36,7 @@ if __name__ == "__main__":
         print("available:",fbp.available)
 
     def test5():
-        from zapret_handler import ZapretHandler
+        from core.zapret_handler import ZapretHandler
         fsp = FlowsealStrategyProvider(".untracked\\flowseal")
         fbp = FlowsealBinsProvider(".untracked\\flowseal_bins")
         fsp.load()
