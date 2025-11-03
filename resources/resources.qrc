@@ -1,6 +1,12 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-    <qresource prefix="/icons">
-        <file>images/tray-icon.png</file>
+    <qresource prefix="/">
+        <file>images/zapret.png</file>
+        <file>images/tray_activated.png</file>
+        <file>images/tray_deactivated.png</file>
+        <file>images/down.png</file>
+    </qresource>
+    <qresource>
+        <file>styles/dark_theme.qss</file>
     </qresource>
 </RCC>

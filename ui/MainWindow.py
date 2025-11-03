@@ -2,7 +2,7 @@ import providers.factory
 from ui.forms_uic.MainWindow import Ui_MainWindow
 from PyQt6.QtWidgets import QMainWindow, QApplication
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
-from PyQt6.QtGui import QIcon, QAction
+from PyQt6.QtGui import QIcon, QAction, QPixmap
 from core.zapret_handler import ZapretHandler, ZapretStatus, _default_status_hook
 import providers
 from core.globals import settings
@@ -13,9 +13,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+
+        self.label.setPixmap(QPixmap(":/images/zapret.png"))
         self.switchControl.setFixedHeight(50)
         self.switchControl.setText(None)
         self.switchControl.stateChanged.connect(self.on_switch_changed)
+
+        self._tray_deactivated_icon = QIcon(':/images/tray_deactivated.png')
+        self._tray_activated_icon = QIcon(':/images/tray_activated.png')
 
         self.zapret = ZapretHandler(
             providers.factory.GetBinsProvider(providers.factory.AvailableBinsProviders()[0]),
@@ -39,7 +44,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.display_text("Disconnected")
 
-        self.tray = QSystemTrayIcon(QIcon(':/icons/images/tray-icon.png'))
+        self.tray = QSystemTrayIcon(self._tray_deactivated_icon)
         self.tray.show()
         self.tray.activated.connect(self.on_tray_activated)
         tray_menu = QMenu()
@@ -52,14 +57,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             exit_action
         ])
         self.tray.setContextMenu(tray_menu)
+
+        self.setFixedSize(310, 360)
         
 
     def closeEvent(self, event):
         self.hide()
         event.ignore()
-        # self.zapret.status_hook = _default_status_hook
-        # event.accept()
-        # self.deleteLater()
 
     def _atexit(self):
         self.zapret.status_hook = _default_status_hook
@@ -86,12 +90,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     def on_new_zapret_status(self,status:ZapretStatus):
         if status == ZapretStatus.STOPPED:
+            self.tray.setIcon(self._tray_deactivated_icon)
             self.display_text("Stopped")
             self.strategyCombo.setDisabled(False)
         elif status == ZapretStatus.STARTING:
             self.strategyCombo.setDisabled(True)
             self.display_text(f"Starting \"{self.choosen_strategy}\" strategy..")
         elif status == ZapretStatus.STARTED:
+            self.tray.setIcon(self._tray_activated_icon)
             self.display_text(f"""Connected via "{self.choosen_strategy}" strategy
 Blockcheck status: {self.zapret.blockcheck()}
 """)
