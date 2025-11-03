@@ -1,7 +1,7 @@
 import providers.factory
 from ui.forms_uic.MainWindow import Ui_MainWindow
 from PyQt6.QtWidgets import QMainWindow
-from core.zapret_handler import ZapretHandler, ZapretStatus
+from core.zapret_handler import ZapretHandler, ZapretStatus, _default_status_hook
 import providers
 from core.globals import settings
 
@@ -34,6 +34,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.display_text("Disconnected")
 
+    def closeEvent(self, event):
+        self.zapret.status_hook = _default_status_hook
+        event.accept()
+        self.deleteLater()
+    
     def display_text(self,txt:str):
         self.infoLabel.setText(txt)
 
