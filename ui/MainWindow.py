@@ -3,6 +3,7 @@ from ui.forms_uic.MainWindow import Ui_MainWindow
 from PyQt6.QtWidgets import QMainWindow
 from core.zapret_handler import ZapretHandler, ZapretStatus
 import providers
+from core.globals import settings
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -28,6 +29,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         for name in self.zapret.strategy.names:
             self.strategyCombo.addItem(name,name)
+        self.strategyCombo.currentTextChanged.connect(self.on_strategy_changed)
+        self.strategyCombo.setCurrentText(settings.preffered_strategy)
 
         self.display_text("Disconnected")
 
@@ -40,6 +43,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.zapret.stop()
 
+    def on_strategy_changed(self,text:str):
+        settings.preffered_strategy = self.choosen_strategy
+    
     def on_new_zapret_status(self,status:ZapretStatus):
         if status == ZapretStatus.STOPPED:
             self.display_text("Stopped")

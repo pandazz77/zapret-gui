@@ -1,7 +1,7 @@
 import os
 from providers.flowseal_parser import download_bins, download_lists, parse_strategy, FlowsealBinsProvider, FlowsealStrategyProvider
 import time
-import core.globals
+import core.globals as g
 
 
 if __name__ == "__main__":
