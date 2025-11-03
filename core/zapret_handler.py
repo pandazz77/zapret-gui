@@ -22,11 +22,12 @@ class ZapretHandler:
         self.strategy = strategy
         self.process: subprocess.Popen = None
         self.status_hook: callable = _default_status_hook
+        self.status: ZapretStatus = ZapretStatus.STOPPED
         self.logger = logging.getLogger("ZapretHandler")
         atexit.register(self.stop)
 
     def start(self,strategy):
-        self.status_hook(ZapretStatus.STARTING)
+        self._status_hook_router(ZapretStatus.STARTING)
         strategy: Strategy = self.strategy.strategies[strategy]
         instructions = strategy["instructions"]
         self.process = subprocess.Popen(
@@ -45,14 +46,18 @@ class ZapretHandler:
             self.logger.debug(line)
             if "capture is started" in line:
                 self.logger.info("started")
-                self.status_hook(ZapretStatus.STARTED)
+                self._status_hook_router(ZapretStatus.STARTED)
         self.logger.info("stopped")
+
+    def _status_hook_router(self,status:ZapretStatus):
+        self.status = status
+        self.status_hook(status)
 
     def stop(self):
         if self.process:
             self.process.terminate()
             self.process = None
-            self.status_hook(ZapretStatus.STOPPED)
+            self._status_hook_router(ZapretStatus.STOPPED)
 
     def blockcheck(self,retries=5) -> bool:
         print("blockchecking...")

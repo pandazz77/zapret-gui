@@ -1,7 +1,7 @@
 import providers.factory
 from ui.forms_uic.MainWindow import Ui_MainWindow
 from PyQt6.QtWidgets import QMainWindow
-from core.zapret_handler import ZapretHandler
+from core.zapret_handler import ZapretHandler, ZapretStatus
 import providers
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -16,6 +16,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             providers.factory.GetBinsProvider(providers.factory.AvailableBinsProviders()[0]),
             providers.factory.GetStrategyProvider(providers.factory.AvailableStrategyProviders()[0])
         )
+        self.zapret.status_hook = self.on_new_zapret_status
 
         # TODO: threaded
         if not self.zapret.strategy.available:
@@ -35,11 +36,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def on_switch_changed(self,state):
         if state:
-            self.display_text(f"Starting \"{self.choosen_strategy}\" strategy..")
             self.zapret.start(self.choosen_strategy)
         else:
             self.zapret.stop()
-            self.display_text("Disconnected")
+
+    def on_new_zapret_status(self,status:ZapretStatus):
+        if status == ZapretStatus.STOPPED:
+            self.display_text("Stopped")
+            self.strategyCombo.setDisabled(False)
+        elif status == ZapretStatus.STARTING:
+            self.strategyCombo.setDisabled(True)
+            self.display_text(f"Starting \"{self.choosen_strategy}\" strategy..")
+        elif status == ZapretStatus.STARTED:
+            self.display_text(f"""Connected via "{self.choosen_strategy}" strategy
+Blockcheck status: {self.zapret.blockcheck()}
+""")
 
     @property
     def choosen_strategy(self):
