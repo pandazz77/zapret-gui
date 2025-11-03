@@ -1,9 +1,13 @@
 import providers.factory
 from ui.forms_uic.MainWindow import Ui_MainWindow
-from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QMainWindow, QApplication
+from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
+from PyQt6.QtGui import QIcon, QAction
 from core.zapret_handler import ZapretHandler, ZapretStatus, _default_status_hook
 import providers
 from core.globals import settings
+from ui.resources import resources
+import atexit
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -18,6 +22,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             providers.factory.GetStrategyProvider(providers.factory.AvailableStrategyProviders()[0])
         )
         self.zapret.status_hook = self.on_new_zapret_status
+        atexit.register(self._atexit)
 
         # TODO: threaded
         if not self.zapret.strategy.available:
@@ -34,13 +39,41 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.display_text("Disconnected")
 
+        self.tray = QSystemTrayIcon(QIcon(':/icons/images/tray-icon.png'))
+        self.tray.show()
+        self.tray.activated.connect(self.on_tray_activated)
+        tray_menu = QMenu()
+        show_action = QAction("Show",self)
+        show_action.triggered.connect(self.show)
+        exit_action = QAction("Exit",self)
+        exit_action.triggered.connect(QApplication.quit)
+        tray_menu.addActions([
+            show_action,
+            exit_action
+        ])
+        self.tray.setContextMenu(tray_menu)
+        
+
     def closeEvent(self, event):
+        self.hide()
+        event.ignore()
+        # self.zapret.status_hook = _default_status_hook
+        # event.accept()
+        # self.deleteLater()
+
+    def _atexit(self):
         self.zapret.status_hook = _default_status_hook
-        event.accept()
-        self.deleteLater()
     
     def display_text(self,txt:str):
         self.infoLabel.setText(txt)
+
+    def on_tray_activated(self,reason):
+        if reason == QSystemTrayIcon.ActivationReason.Trigger:
+            if self.isHidden():
+                self.show()
+            else:
+                self.raise_()
+                self.activateWindow()
 
     def on_switch_changed(self,state):
         if state:

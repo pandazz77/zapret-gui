@@ -3,3 +3,5 @@ __pycache__
 .venv
 ui/forms_uic/*
 !ui/forms_uic/__init__.py
+ui/resources/*
+!ui/resources/__init__.py
