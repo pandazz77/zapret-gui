@@ -35,7 +35,8 @@ class ZapretHandler:
             cwd=os.path.dirname(self.bin.executable),
             text=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT
+            stderr=subprocess.STDOUT,
+            creationflags=subprocess.CREATE_NO_WINDOW
         )
         self._stdout_hook = threading.Thread(target=self._process_stdout_hook,daemon=True)
         self._stdout_hook.start()
