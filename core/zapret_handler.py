@@ -1,5 +1,6 @@
 from core.zapret_provider import ZapretBinsProvider
 from core.strategy import StrategyProvider, Strategy
+from core.utils import get_pid_by_name
 import subprocess
 import threading
 import os
@@ -27,6 +28,10 @@ class ZapretHandler:
         atexit.register(self.stop)
 
     def start(self,strategy):
+        if existing_pid:= get_pid_by_name(os.path.basename(self.bin.executable)):
+            self.logger.warn(f"{os.path.basename(self.bin.executable)} already exists with pid {existing_pid}. Killing...")
+            os.kill(existing_pid,-1)
+
         self._status_hook_router(ZapretStatus.STARTING)
         strategy: Strategy = self.strategy.strategies[strategy]
         instructions = strategy["instructions"]

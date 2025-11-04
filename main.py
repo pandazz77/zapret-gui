@@ -9,7 +9,7 @@ from core.globals import setup_logging
 def main() -> int:
     app = QApplication(sys.argv) 
 
-    parser = argparse.ArgumentParser(description='Описание вашей программы.')
+    parser = argparse.ArgumentParser(description='Zapret GUI')
     parser.add_argument(
         '--loglevel',
         default='INFO', # Уровень по умолчанию
