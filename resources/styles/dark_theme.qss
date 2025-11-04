@@ -18,16 +18,60 @@ QToggle{
 }
 
 QComboBox {
-    border: 1px solid gray;
-    height: 50px;
-    border-radius: 10px;
+    height: 40;
+    font-weight: bold; /* Установка жирного шрифта */
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+QComboBox {
+    combobox-popup: 0;
+    border: 2px solid white; 
+    border-radius: 8px;
     color: white;
-    font-size: 14px; /* Размер шрифта в пикселях */
-    font-weight: bold;
+    background-color: #2b2b2b;
+}
+/* Стиль для выпадающего меню комбобокса */
+QComboBox QAbstractItemView {
+    color: #b0b0b0;    
+    border: 2px solid #ededed;
+    border-radius: 8px;
+    selection-background-color: rgba(66, 80, 222, 0.1);
+    selection-color:white;
+}
+
+QComboBox QAbstractItemView {
+    margin-top: 0px; 
+}
+
+QComboBox QAbstractItemView::item {
+
+    height: 40;
+    border-radius: 8px;
+}
+/* Стиль при наводке на элементы меню комбобокса */
+QComboBox QAbstractItemView::item:hover {
+    border-radius: 8px;
+    background-color: #ededed;
+    padding-left: 6px ;
+    color: #2b2b2b;
+}
+
+QComboBox QListView{
+    outline: 0px;
+}
+
+QComboBox::drop-down 
+{
+    border: 0px; 
+    
 }
 
 QComboBox::down-arrow {
-    image: url(:/images/down.png);
+    image: url(:/images/down.png); /* Путь к изображению стрелки */
+    subcontrol-origin: padding;
+    subcontrol-position: right; /* Выравнивание по правому краю */
     width: 20px;
     height: 20px;
+    padding-right: 10px;
 }
