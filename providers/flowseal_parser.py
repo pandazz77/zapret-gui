@@ -25,7 +25,6 @@ def get_raw_strategies_contents(paths:list[str]):
 
     for path in paths:
         strategy_name = path.split("/")[-1].removesuffix(".bat")
-        print(strategy_name)
         content = github.get_file_content_raw(USERNAME,REPONAME,file_path=path).decode("utf-8")
         result[strategy_name] = content
         time.sleep(0.5)

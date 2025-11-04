@@ -1,5 +1,6 @@
 import requests
 import base64
+import logging
 
 
 def get_files_list(owner:str, repo:str, path:str="", branch:str='main') -> list[str]:
@@ -35,6 +36,7 @@ def get_file_content_raw(owner:str, repo:str, file_path:str, branch:str='main') 
     """
         Get file content via raw.githubusercontent.
     """
+    logging.debug(f"GET'{file_path}' FROM {owner}/{repo}/{branch}")
     url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_path}"
     
     response = requests.get(url)
