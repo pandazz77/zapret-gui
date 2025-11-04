@@ -33,18 +33,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.tasks = TaskQueue()
 
-        if not self.zapret.strategy.available:
-            self.tasks.add(self._updateStrats)
-        else:
-            self.zapret.strategy.load()
+        self.checkAvailable()
 
-        if not self.zapret.bin.available:
-            self.tasks.add(self._updateBins)
-
-        for name in self.zapret.strategy.names:
-            self.strategyCombo.addItem(name,name)
+        self.fillStrategies()
         self.strategyCombo.currentTextChanged.connect(self.on_strategy_changed)
-        self.strategyCombo.setCurrentText(settings.preffered_strategy)
 
         self.tray = QSystemTrayIcon(self._tray_deactivated_icon)
         self.tray.show()
@@ -61,6 +53,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tray.setContextMenu(tray_menu)
 
         self.setFixedSize(310, 360)
+
+    def fillStrategies(self):
+        if not self.zapret.strategy.names:
+            return
+        for name in self.zapret.strategy.names:
+            self.strategyCombo.addItem(name,name)
+        if not settings.preffered_strategy:
+            settings.preffered_strategy = self.zapret.strategy.names[0]
+        self.strategyCombo.setCurrentText(settings.preffered_strategy)
+
+    def checkAvailable(self):
+        if not self.zapret.strategy.available:
+            self.tasks.add(self._updateStrats)
+        else:
+            self.zapret.strategy.load()
+        
+        if not self.zapret.bin.available:
+            self.tasks.add(self._updateBins)
         
     def _updateBins(self):
         self.switchControl.setDisabled(True)
@@ -75,11 +85,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.display_text("Updating strategies...")
         self.zapret.strategy.update()
         self.switchControl.setDisabled(False)
-        for name in self.zapret.strategy.names:
-            self.strategyCombo.addItem(name,name)
-        if not settings.preffered_strategy:
-            settings.preffered_strategy = self.zapret.strategy.names[0]
-        self.strategyCombo.setCurrentText(settings.preffered_strategy)
+        self.fillStrategies()
         self.display_text("IDLE")
 
     def closeEvent(self, event):
