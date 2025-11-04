@@ -65,6 +65,19 @@ class UICCommand(Command):
             dest_path = os.path.join(dest_dir,name+".py")
             UICCommand.make_ui(source_path,dest_path)
 
+class NuitkaCompile(Command):
+    description = 'Compile with nuitka'
+
+    def initialize_options(self):
+        self.build_dir = "nuitka_build"
+    
+    def finalize_options(self):
+        ...
+
+    def run(self):
+        os.makedirs(self.build_dir,exist_ok=True)
+        os.chdir(self.build_dir)
+        os.system("nuitka --onefile --windows-disable-console --enable-plugin=pyqt6 ../main.py -o zapret_gui.exe")
 
 if __name__ == "__main__":
     setup(
@@ -74,7 +87,8 @@ if __name__ == "__main__":
         py_modules=['main'],
         cmdclass={
             "uic":UICCommand,
-            "rcc":RCCCommand 
+            "rcc":RCCCommand,
+            "nuitka": NuitkaCompile
         },
         entry_points={
             'console_scripts': [
