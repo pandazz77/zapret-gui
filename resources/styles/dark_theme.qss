@@ -18,6 +18,7 @@ QToggle{
 }
 
 QComboBox {
+    margin: 10px;
     height: 40;
     font-weight: bold; /* Установка жирного шрифта */
     font-size: 14px;
@@ -74,4 +75,10 @@ QComboBox::down-arrow {
     width: 20px;
     height: 20px;
     padding-right: 10px;
+}
+
+QComboBox:disabled {
+    background-color: #2d2d2d;
+    color: #808080; 
+    border: 1px solid #444444;
 }
