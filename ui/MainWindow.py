@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QMainWindow, QApplication
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction, QPixmap
 from core.zapret_handler import ZapretHandler, ZapretStatus, _default_status_hook
+from core.utils import TaskQueue
 import providers
 from core.globals import settings
 from ui.resources import resources
@@ -13,6 +14,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.display_text("IDLE")
 
         self.label.setPixmap(QPixmap(":/images/zapret.png"))
         self.switchControl.setFixedHeight(50)
@@ -29,20 +31,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.zapret.status_hook = self.on_new_zapret_status
         atexit.register(self._atexit)
 
-        # TODO: threaded
+        self.tasks = TaskQueue()
+
         if not self.zapret.strategy.available:
-            self.zapret.strategy.update()
-        self.zapret.strategy.load()
+            self.tasks.add(self._updateStrats)
+        else:
+            self.zapret.strategy.load()
 
         if not self.zapret.bin.available:
-            self.zapret.bin.update()
+            self.tasks.add(self._updateBins)
 
         for name in self.zapret.strategy.names:
             self.strategyCombo.addItem(name,name)
         self.strategyCombo.currentTextChanged.connect(self.on_strategy_changed)
         self.strategyCombo.setCurrentText(settings.preffered_strategy)
-
-        self.display_text("Disconnected")
 
         self.tray = QSystemTrayIcon(self._tray_deactivated_icon)
         self.tray.show()
@@ -60,6 +62,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.setFixedSize(310, 360)
         
+    def _updateBins(self):
+        self.switchControl.setDisabled(True)
+        self.display_text("Updating bins...")
+        self.zapret.bin.update()
+        self.switchControl.setDisabled(False)
+        self.display_text("IDLE")
+
+
+    def _updateStrats(self):
+        self.switchControl.setDisabled(True)
+        self.display_text("Updating strategies...")
+        self.zapret.strategy.update()
+        self.switchControl.setDisabled(False)
+        for name in self.zapret.strategy.names:
+            self.strategyCombo.addItem(name,name)
+        if not settings.preffered_strategy:
+            settings.preffered_strategy = self.zapret.strategy.names[0]
+        self.strategyCombo.setCurrentText(settings.preffered_strategy)
+        self.display_text("IDLE")
 
     def closeEvent(self, event):
         self.hide()

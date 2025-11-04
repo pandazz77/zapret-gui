@@ -1,5 +1,7 @@
 import subprocess
 import platform
+import queue
+import threading
 
 
 def get_pid_by_name_windows(process_name: str) -> int | None:
@@ -19,3 +21,23 @@ def get_pid_by_name_windows(process_name: str) -> int | None:
 def get_pid_by_name(process_name: str) -> int | None:
     if platform.system() == "Windows":
         return get_pid_by_name_windows(process_name)
+    
+
+class TaskQueue:
+    def __init__(self):
+        self._tasks = queue.Queue()
+        self._thread:threading.Thread = None
+
+    def add(self,target:callable,*args,**kwargs):
+        self._tasks.put((target,args,kwargs))
+        if self._thread is None:
+            self._thread = threading.Thread(target=self._task_loop,daemon=True) 
+            self._thread.start()
+
+    def _task_loop(self):
+        while not self._tasks.empty():
+            target,args,kwargs = self._tasks.get()
+            target(*args,**kwargs)
+        else:
+            self._thread = None
+
