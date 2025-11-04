@@ -9,14 +9,15 @@ settings: Settings = None
 
 os.makedirs(APPDIR,exist_ok=True)
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='[%(name)s]  %(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler(os.path.join(APPDIR,'zapret_gui.log'))
-    ]
-)
+def setup_logging(level:str):
+    logging.basicConfig(
+        level=level,
+        format='[%(name)s]  %(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler(os.path.join(APPDIR,'zapret_gui.log'))
+        ]
+    )
 
 Settings.setup(APPDIR)
 settings = Settings(

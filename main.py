@@ -3,9 +3,22 @@ from PyQt6.QtCore import QFile, QTextStream
 from ui.MainWindow import MainWindow
 from ui.resources import resources
 import sys
+import argparse
+from core.globals import setup_logging
 
 def main() -> int:
     app = QApplication(sys.argv) 
+
+    parser = argparse.ArgumentParser(description='Описание вашей программы.')
+    parser.add_argument(
+        '--loglevel',
+        default='INFO', # Уровень по умолчанию
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+        help='Уровень логирования (по умолчанию: INFO)'
+    )
+    args = parser.parse_args()
+    log_level = args.loglevel.upper()
+    setup_logging(log_level)
 
     qss_file = QFile(":/styles/dark_theme.qss") # Путь к ресурсу
     if qss_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
