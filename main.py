@@ -4,8 +4,8 @@ from ui.MainWindow import MainWindow
 from ui.resources import resources
 import sys
 
-def main(argv) -> int:
-    app = QApplication(argv) 
+def main() -> int:
+    app = QApplication(sys.argv) 
 
     qss_file = QFile(":/styles/dark_theme.qss") # Путь к ресурсу
     if qss_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
@@ -22,4 +22,4 @@ def main(argv) -> int:
     return app.exec()
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(main())
