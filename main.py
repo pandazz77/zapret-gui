@@ -16,6 +16,11 @@ def main() -> int:
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
         help='Уровень логирования (по умолчанию: INFO)'
     )
+    parser.add_argument(
+        "--tray",
+        action="store_true",
+        help='start application in tray mode'
+    )
     args = parser.parse_args()
     log_level = args.loglevel.upper()
     setup_logging(log_level)
@@ -30,7 +35,10 @@ def main() -> int:
         print("Cannot find application style")
 
     mw = MainWindow()
-    mw.show() 
+    if not args.tray:
+        mw.show()
+    else:
+        mw.hide() 
 
     return app.exec()
 
