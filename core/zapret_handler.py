@@ -8,19 +8,20 @@ import atexit
 import requests
 import logging
 from enum import Enum
+from PyQt6.QtCore import QObject, pyqtSignal
 
 class ZapretStatus(Enum):
     STOPPED = 0,
     STARTING = 1,
     STARTED = 2
 
-def _default_status_hook(status:ZapretStatus):
-    print("New Zapret status:",status.name)
-
 _instance:"ZapretHandler" = None
 
-class ZapretHandler:
+class ZapretHandler(QObject):
+    new_status = pyqtSignal(ZapretStatus)
+
     def __init__(self,bin:ZapretBinsProvider,strategy:StrategyProvider):
+        super().__init__()
         global _instance
         if _instance:
             raise Exception("ZapretHandler already initialized")
@@ -29,9 +30,11 @@ class ZapretHandler:
         self.bin = bin
         self.strategy = strategy
         self.process: subprocess.Popen = None
-        self.status_hook: callable = _default_status_hook
         self.status: ZapretStatus = ZapretStatus.STOPPED
         self.logger = logging.getLogger("ZapretHandler")
+
+        self.new_status.connect(self._on_new_status)
+
         atexit.register(self.stop) 
 
     @staticmethod
@@ -43,7 +46,7 @@ class ZapretHandler:
             self.logger.warn(f"{os.path.basename(self.bin.executable)} already exists with pid {existing_pid}. Killing...")
             os.kill(existing_pid,-1)
 
-        self._status_hook_router(ZapretStatus.STARTING)
+        self.new_status.emit(ZapretStatus.STARTING)
         strategy: Strategy = self.strategy.strategies[strategy]
         instructions = strategy["instructions"]
         self.process = subprocess.Popen(
@@ -63,18 +66,17 @@ class ZapretHandler:
             self.logger.debug(line)
             if "capture is started" in line:
                 self.logger.info("started")
-                self._status_hook_router(ZapretStatus.STARTED)
+                self.new_status.emit(ZapretStatus.STARTED)
         self.logger.info("stopped")
 
-    def _status_hook_router(self,status:ZapretStatus):
+    def _on_new_status(self,status:ZapretStatus):
         self.status = status
-        self.status_hook(status)
 
     def stop(self):
         if self.process:
             self.process.terminate()
             self.process = None
-            self._status_hook_router(ZapretStatus.STOPPED)
+            self.new_status.emit(ZapretStatus.STOPPED)
 
     def blockcheck(self,retries=5) -> bool:
         self.logger.debug("blockchecking...")
