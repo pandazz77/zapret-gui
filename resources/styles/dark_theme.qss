@@ -106,14 +106,6 @@ QPushButton:checked{
     border: 2px solid black;
 }
 
-QPushButton#switchPageBtn{
-    min-height: 20px;
-    max-height: 20px;
-
-    min-width: 80px;
-    max-width: 80px;
-}
-
 /* ========================== */
 
 QCheckBox{
@@ -131,4 +123,19 @@ QCheckBox::indicator {
 QCheckBox::indicator:checked {
     image: url(:/images/yes_black.svg);
 
+}
+
+/* ========================== */
+
+QPushButton#switchPageBtn{
+    min-height: 20px;
+    max-height: 20px;
+
+    min-width: 80px;
+    max-width: 80px;
+}
+
+
+QWidget#footer_container{
+    background-color: #202020;
 }
