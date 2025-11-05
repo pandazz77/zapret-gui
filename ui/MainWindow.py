@@ -7,7 +7,7 @@ from core.zapret_handler import ZapretStatus
 from ui.resources import resources
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self,start:bool=False):
         super().__init__()
         self.setupUi(self)
 
@@ -25,6 +25,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.main.zapret.new_status.connect(self.on_new_zapret_status)
         self.settings.strategyChanged.connect(self.main.on_new_strategy_provider)
         self.settings.binsChanged.connect(self.main.on_new_bins_provider)
+        
+        if start:
+            self.main.switchControl.click()
 
 
     def closeEvent(self, event):

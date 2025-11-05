@@ -21,6 +21,11 @@ def main() -> int:
         action="store_true",
         help='start application in tray mode'
     )
+    parser.add_argument(
+        "--start",
+        action="store_true",
+        help='start zapret'
+    )
     args = parser.parse_args()
     log_level = args.loglevel.upper()
     setup_logging(log_level)
@@ -34,7 +39,7 @@ def main() -> int:
     else:
         print("Cannot find application style")
 
-    mw = MainWindow()
+    mw = MainWindow(args.start)
     if not args.tray:
         mw.show()
     else:
