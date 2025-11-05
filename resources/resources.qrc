@@ -5,6 +5,8 @@
         <file>images/tray_activated.png</file>
         <file>images/tray_deactivated.png</file>
         <file>images/down.png</file>
+        <file>images/yes_black.svg</file>
+        <file>images/no_black.svg</file>
     </qresource>
     <qresource>
         <file>styles/dark_theme.qss</file>

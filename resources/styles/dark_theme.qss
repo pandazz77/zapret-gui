@@ -82,3 +82,53 @@ QComboBox:disabled {
     color: #808080; 
     border: 1px solid #444444;
 }
+
+
+QPushButton{
+    font-size: 14px; 
+    border: 2px solid transparent; 
+    border-radius: 8px;
+    min-height: 36%;
+    background-color: #181818;
+    color: white;
+}
+
+QPushButton:hover{
+    background-color:rgb(56, 56, 56);
+}
+
+QPushButton:pressed{
+    background-color: rgb(87, 87, 87);
+}
+
+QPushButton:checked{
+    min-height: 34%;
+    border: 2px solid black;
+}
+
+QPushButton#switchPageBtn{
+    min-height: 20px;
+    max-height: 20px;
+
+    min-width: 80px;
+    max-width: 80px;
+}
+
+/* ========================== */
+
+QCheckBox{
+    color: white;
+    font-weight: bold;
+    background-color: transparent;
+}
+
+QCheckBox::indicator {
+    width: 40px;
+    height: 40px;
+    image: url(:/images/no_black.svg);
+
+}
+QCheckBox::indicator:checked {
+    image: url(:/images/yes_black.svg);
+
+}
