@@ -14,10 +14,65 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="blockcheckBtn">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>BLOCKCHECK</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="blockcheckStatus">
+       <property name="text">
+        <string>blockcheck_status</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Binaries provider:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="binsCombo"/>
+     </item>
+    </layout>
+   </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="label">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Strategies provider:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="strategiesCombo"/>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="autostartCheck">
      <property name="text">
-      <string>THERE IS SETTINGS</string>
+      <string>Autostart</string>
      </property>
     </widget>
    </item>

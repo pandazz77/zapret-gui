@@ -17,15 +17,26 @@ class ZapretStatus(Enum):
 def _default_status_hook(status:ZapretStatus):
     print("New Zapret status:",status.name)
 
+_instance:"ZapretHandler" = None
+
 class ZapretHandler:
     def __init__(self,bin:ZapretBinsProvider,strategy:StrategyProvider):
+        global _instance
+        if _instance:
+            raise Exception("ZapretHandler already initialized")
+        _instance = self
+
         self.bin = bin
         self.strategy = strategy
         self.process: subprocess.Popen = None
         self.status_hook: callable = _default_status_hook
         self.status: ZapretStatus = ZapretStatus.STOPPED
         self.logger = logging.getLogger("ZapretHandler")
-        atexit.register(self.stop)
+        atexit.register(self.stop) 
+
+    @staticmethod
+    def get_instance() -> "ZapretHandler":
+        return _instance
 
     def start(self,strategy):
         if existing_pid:= get_pid_by_name(os.path.basename(self.bin.executable)):
