@@ -76,7 +76,10 @@ class ZapretHandler(QObject):
         if self.process:
             self.process.terminate()
             self.process = None
-            self.new_status.emit(ZapretStatus.STOPPED)
+            try:
+                self.new_status.emit(ZapretStatus.STOPPED)
+            except RuntimeError:
+                pass
 
     def blockcheck(self,retries=5) -> bool:
         self.logger.debug("blockchecking...")
