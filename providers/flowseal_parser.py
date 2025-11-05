@@ -30,22 +30,17 @@ def get_raw_strategies_contents(paths:list[str]):
         time.sleep(0.5)
     return result
 
-def download_file(gh_path,output):
-    with open(output,"wb") as f:
-        content = github.get_file_content_raw(USERNAME,REPONAME,gh_path)
-        f.write(content)
-
 def download_lists(output_folder:str):
     paths = filter(lambda path: path.endswith(".txt"),github.get_files_list(USERNAME,REPONAME,"lists"))
     for path in paths:
         filename = path.split("/")[-1]
-        download_file(path,os.path.join(output_folder,filename))
+        github.download_file(USERNAME,REPONAME, path,os.path.join(output_folder,filename))
 
 def download_bins(output_folder:str):
     paths = filter(lambda path: path.endswith(".bin"),github.get_files_list(USERNAME,REPONAME,"bin"))
     for path in paths:
         filename = path.split("/")[-1]
-        download_file(path,os.path.join(output_folder,filename))
+        github.download_file(USERNAME,REPONAME, path,os.path.join(output_folder,filename))
 
 def enclose_sep(path:str):
     if not path.endswith(os.path.sep): path += os.path.sep
@@ -106,4 +101,4 @@ class FlowsealBinsProvider(ZapretBinsProvider):
         paths = filter(lambda path: path.endswith((".dll",".sys",".exe")),github.get_files_list(USERNAME,REPONAME,"bin"))
         for path in paths:
             filename = path.split("/")[-1]
-            download_file(path,os.path.join(output_folder,filename))
+            github.download_file(USERNAME,REPONAME, path,os.path.join(output_folder,filename))

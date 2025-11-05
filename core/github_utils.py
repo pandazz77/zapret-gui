@@ -46,6 +46,10 @@ def get_file_content_raw(owner:str, repo:str, file_path:str, branch:str='main') 
     else:
         raise Exception(f"Error: {response.status_code}")
     
+def download_file(username,reponame,gh_path,output,branch='main'):
+    with open(output,"wb") as f:
+        content = get_file_content_raw(username,reponame,gh_path,branch=branch)
+        f.write(content)
 
 if __name__ == "__main__":
     USERNAME = "Flowseal"
