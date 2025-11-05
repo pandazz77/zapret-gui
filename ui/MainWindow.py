@@ -21,9 +21,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.switchControl.setText(None)
         self.switchControl.stateChanged.connect(self.on_switch_changed)
 
-        self._tray_deactivated_icon = QIcon(':/images/tray_deactivated.png')
-        self._tray_activated_icon = QIcon(':/images/tray_activated.png')
-
         self.zapret = ZapretHandler(
             providers.factory.GetBinsProvider(providers.factory.AvailableBinsProviders()[0]),
             providers.factory.GetStrategyProvider(providers.factory.AvailableStrategyProviders()[0])
@@ -38,21 +35,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.fillStrategies()
         self.strategyCombo.currentTextChanged.connect(self.on_strategy_changed)
 
+        self._tray_deactivated_icon = QIcon(':/images/tray_deactivated.png')
+        self._tray_activated_icon = QIcon(':/images/tray_activated.png')
+        self.tray: QSystemTrayIcon = None
+        self.tray_actions: dict[str,QAction] = {}
+        self._initTray()
+
+       
+
+        self.setFixedSize(310, 360)
+
+    def _initTray(self):
+        if self.tray is not None:
+            return
+
         self.tray = QSystemTrayIcon(self._tray_deactivated_icon)
         self.tray.show()
         self.tray.activated.connect(self.on_tray_activated)
         tray_menu = QMenu()
-        show_action = QAction("Show",self)
-        show_action.triggered.connect(self.show)
-        exit_action = QAction("Exit",self)
-        exit_action.triggered.connect(QApplication.quit)
-        tray_menu.addActions([
-            show_action,
-            exit_action
-        ])
+        self.tray_actions = {
+            "show": QAction("Show",self),
+            "start_stop": QAction("Start",self),
+            "exit": QAction("Exit",self)
+        }
+        self.tray_actions["show"].triggered.connect(self.show)
+        self.tray_actions["exit"].triggered.connect(QApplication.quit)
+        self.tray_actions["start_stop"].triggered.connect(self.switchControl.click)
+        tray_menu.addActions(self.tray_actions.values())
         self.tray.setContextMenu(tray_menu)
-
-        self.setFixedSize(310, 360)
 
     def fillStrategies(self):
         if not self.zapret.strategy.names:
@@ -118,6 +128,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def on_new_zapret_status(self,status:ZapretStatus):
         if status == ZapretStatus.STOPPED:
             self.tray.setIcon(self._tray_deactivated_icon)
+            self.tray_actions["start_stop"].setText("Start")
             self.display_text("Stopped")
             self.strategyCombo.setDisabled(False)
         elif status == ZapretStatus.STARTING:
@@ -125,6 +136,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.display_text(f"Starting \"{self.choosen_strategy}\" strategy..")
         elif status == ZapretStatus.STARTED:
             self.tray.setIcon(self._tray_activated_icon)
+            self.tray_actions["start_stop"].setText("Stop")
             self.display_text(f"""Connected via "{self.choosen_strategy}" strategy
 Blockcheck status: {self.zapret.blockcheck()}
 """)
