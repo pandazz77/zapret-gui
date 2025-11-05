@@ -21,8 +21,8 @@ class MainWidget(QWidget, Ui_MainWidget):
         self.switchControl.stateChanged.connect(self.on_switch_changed)
 
         self.zapret = ZapretHandler(
-            providers.factory.GetBinsProvider(providers.factory.AvailableBinsProviders()[0]),
-            providers.factory.GetStrategyProvider(providers.factory.AvailableStrategyProviders()[0])
+            providers.factory.GetBinsProvider(settings.preffered_bins_provider),
+            providers.factory.GetStrategyProvider(settings.preffered_strategy_provider)
         )
         self.zapret.new_status.connect(self.on_new_zapret_status,Qt.ConnectionType.DirectConnection)
 
@@ -90,6 +90,18 @@ class MainWidget(QWidget, Ui_MainWidget):
             self.display_text(f"""Connected via "{self.choosen_strategy}" strategy
 Blockcheck status: {self.zapret.blockcheck()}
 """)
+            
+    def on_new_strategy_provider(self,name:str):
+        if self.zapret.status != ZapretStatus.STOPPED:
+            self.switchControl.click()
+        self.zapret.strategy = providers.factory.GetStrategyProvider(name)
+        self.checkAvailable()
+
+    def on_new_bins_provider(self,name:str):
+        if self.zapret.status != ZapretStatus.STOPPED:
+            self.switchControl.click()
+        self.zapret.bin = providers.factory.GetBinsProvider(name)
+        self.checkAvailable
 
     @property
     def choosen_strategy(self):

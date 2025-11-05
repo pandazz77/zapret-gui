@@ -23,6 +23,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._initTray()
 
         self.main.zapret.new_status.connect(self.on_new_zapret_status)
+        self.settings.strategyChanged.connect(self.main.on_new_strategy_provider)
+        self.settings.binsChanged.connect(self.main.on_new_bins_provider)
+
 
     def closeEvent(self, event):
         self.hide()

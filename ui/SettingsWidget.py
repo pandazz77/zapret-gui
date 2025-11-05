@@ -2,13 +2,16 @@
 import providers.factory
 from ui.forms_uic.SettingsWidget import Ui_SettingsWidget
 from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 import providers
 from core.globals import settings
 from core.zapret_handler import ZapretHandler
 from core.utils import TaskQueue
 
 class SettingsWidget(QWidget, Ui_SettingsWidget):
+    strategyChanged = pyqtSignal(str)
+    binsChanged = pyqtSignal(str)
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -26,10 +29,12 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
 
     def on_strategy_changed(self,name:str):
         settings.preffered_strategy_provider = name
+        self.strategyChanged.emit(settings.preffered_strategy_provider)
         print(name)
 
     def on_bin_changed(self,name:str):
         settings.preffered_bins_provider = name
+        self.binsChanged.emit(settings.preffered_bins_provider)
         print(name)
 
     def on_blockcheck(self):
