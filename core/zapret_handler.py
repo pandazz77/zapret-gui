@@ -66,13 +66,14 @@ class ZapretHandler:
             self._status_hook_router(ZapretStatus.STOPPED)
 
     def blockcheck(self,retries=5) -> bool:
-        print("blockchecking...")
+        self.logger.debug("blockchecking...")
         for _ in range(retries):
             try:
                 resp = requests.get("https://discord.com",timeout=3)
-            except Exception:
+            except Exception as e:
+                self.logger.info(f"blockchecking exception: {e}")
                 continue
-            print(resp.status_code)
+            self.logger.info(f"blockchecking status: {resp.status_code}")
             if resp.status_code == 200: return True
 
         return False

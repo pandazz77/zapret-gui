@@ -15,6 +15,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.display_text("IDLE")
+        self.infoLabel.setWordWrap(True)
 
         self.label.setPixmap(QPixmap(":/images/zapret.png"))
         self.switchControl.setFixedHeight(50)
