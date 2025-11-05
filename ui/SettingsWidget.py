@@ -20,6 +20,8 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
 
         self.strategiesCombo.addItems(providers.factory.AvailableStrategyProviders())
         self.binsCombo.addItems(providers.factory.AvailableBinsProviders())
+        self.strategiesCombo.setCurrentText(settings.preffered_strategy_provider)
+        self.binsCombo.setCurrentText(settings.preffered_bins_provider)
         
         self.strategiesCombo.currentTextChanged.connect(self.on_strategy_changed)
         self.binsCombo.currentTextChanged.connect(self.on_bin_changed)

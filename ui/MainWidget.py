@@ -36,6 +36,7 @@ class MainWidget(QWidget, Ui_MainWidget):
     def fillStrategies(self):
         if not self.zapret.strategy.names:
             return
+        self.strategyCombo.clear()
         for name in self.zapret.strategy.names:
             self.strategyCombo.addItem(name,name)
         if not settings.preffered_strategy:
