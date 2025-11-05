@@ -2,6 +2,7 @@ import providers.factory
 from ui.forms_uic.MainWidget import Ui_MainWidget
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import Qt
 from core.zapret_handler import ZapretHandler, ZapretStatus
 from core.utils import TaskQueue
 import providers
@@ -23,7 +24,7 @@ class MainWidget(QWidget, Ui_MainWidget):
             providers.factory.GetBinsProvider(providers.factory.AvailableBinsProviders()[0]),
             providers.factory.GetStrategyProvider(providers.factory.AvailableStrategyProviders()[0])
         )
-        self.zapret.new_status.connect(self.on_new_zapret_status)
+        self.zapret.new_status.connect(self.on_new_zapret_status,Qt.ConnectionType.DirectConnection)
 
         self.tasks = TaskQueue()
 
