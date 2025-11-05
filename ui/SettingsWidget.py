@@ -13,6 +13,7 @@ import os
 import logging
 
 WIN_RUN_PATH = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+AUTOSTART_CLI_ARGS = "--tray --start"
 
 class SettingsWidget(QWidget, Ui_SettingsWidget):
     strategyChanged = pyqtSignal(str)
@@ -67,9 +68,9 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
         if val == Qt.CheckState.Checked:
             if platform.system() == "Windows":
                 if sys.executable.endswith("python.exe"):
-                    executable = f"{sys.executable} {os.path.abspath(sys.argv[0])}"
+                    executable = f"{sys.executable} {os.path.abspath(sys.argv[0])} {AUTOSTART_CLI_ARGS}"
                 else:
-                    executable = sys.executable
+                    executable = f"{sys.executable} {AUTOSTART_CLI_ARGS}"
                 logging.info(f"AUTOSTART ON: {executable}")
                 self.qset.setValue("zapret_gui",executable)
 
