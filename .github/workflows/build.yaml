@@ -1,0 +1,42 @@
+name: Build with Nuitka
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest]
+        python-version: [ '3.13' ]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install nuitka
+
+    - name: Build with Nuitka (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        python ./setup.py rcc uic nuitka
+      shell: cmd
+
+    - name: Upload executable (Windows)
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v4
+      with:
+        name: executable-windows-${{ matrix.python-version }}
+        path: nuitka_build/zapret_gui.exe
