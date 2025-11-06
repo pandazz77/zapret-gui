@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt
 from core.zapret_handler import ZapretHandler, ZapretStatus
-from core.utils import TaskQueue
+from core.utils import TaskQueue, threaded
 import providers
 from core.globals import settings
 
@@ -71,6 +71,7 @@ class MainWidget(QWidget, Ui_MainWidget):
     def display_text(self,txt:str):
         self.infoLabel.setText(txt)
 
+    @threaded
     def on_switch_changed(self,state):
         if state:
             self.zapret.start(self.choosen_strategy)

@@ -6,7 +6,7 @@ from PyQt6.QtCore import Qt, pyqtSignal, QSettings
 import providers
 from core.globals import settings
 from core.zapret_handler import ZapretHandler
-from core.utils import TaskQueue
+from core.utils import threaded
 import platform
 import sys
 import os
@@ -22,8 +22,6 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-
-        self.tasks = TaskQueue()
 
         self.strategiesCombo.addItems(providers.factory.AvailableStrategyProviders())
         self.binsCombo.addItems(providers.factory.AvailableBinsProviders())
@@ -54,8 +52,9 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
         print(name)
 
     def on_blockcheck(self):
-        self.tasks.add(self._blockcheck)
+        self._blockcheck()
 
+    @threaded
     def _blockcheck(self):
         self.blockcheckBtn.setDisabled(True)
         self.blockcheckStatus.setText("Processing...")
