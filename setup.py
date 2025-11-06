@@ -2,6 +2,7 @@ from setuptools import setup, find_packages, Command
 from core.globals import VERSION
 
 import os
+import sys
 import subprocess
 
 class RCCCommand(Command):
@@ -77,7 +78,9 @@ class NuitkaCompile(Command):
     def run(self):
         os.makedirs(self.build_dir,exist_ok=True)
         os.chdir(self.build_dir)
-        os.system("nuitka --onefile --windows-console-mode=disable --enable-plugin=pyside6 ../main.py -o zapret_gui.exe")
+        ret = os.system("nuitka --onefile --windows-console-mode=disable --assume-yes-for-downloads --enable-plugin=pyside6 ../main.py -o zapret_gui.exe")
+        if ret:
+            sys.exit(ret)
 
 if __name__ == "__main__":
     setup(
