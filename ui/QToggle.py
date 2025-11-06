@@ -30,27 +30,27 @@ The example demonstrates how to use the QToggle class by creating three
 different toggles with various settings such as custom height, colors, and font.
 """
 
-from PyQt6.QtCore import Qt, QRect, pyqtProperty, QPropertyAnimation, QPoint, \
+from PySide6.QtCore import Qt, QRect, Property, QPropertyAnimation, QPoint, \
     QEasingCurve
-from PyQt6.QtGui import QColor, QFontMetrics, QPainter, QPainterPath, QBrush, \
+from PySide6.QtGui import QColor, QFontMetrics, QPainter, QPainterPath, QBrush, \
     QPen, QFont
-from PyQt6.QtWidgets import QApplication, QWidget, QCheckBox, QVBoxLayout
+from PySide6.QtWidgets import QApplication, QWidget, QCheckBox, QVBoxLayout
 
 
 class QToggle(QCheckBox):
-    bg_color = pyqtProperty(
+    bg_color = Property(
         QColor, lambda self: self._bg_color,
         lambda self, col: setattr(self, '_bg_color', col))
-    circle_color = pyqtProperty(
+    circle_color = Property(
         QColor, lambda self: self._circle_color,
         lambda self, col: setattr(self, '_circle_color', col))
-    active_color = pyqtProperty(
+    active_color = Property(
         QColor, lambda self: self._active_color,
         lambda self, col: setattr(self, '_active_color', col))
-    disabled_color = pyqtProperty(
+    disabled_color = Property(
         QColor, lambda self: self._disabled_color,
         lambda self, col: setattr(self, '_disabled_color', col))
-    text_color = pyqtProperty(
+    text_color = Property(
         QColor, lambda self: self._text_color,
         lambda self, col: setattr(self, '_text_color', col))
 
@@ -65,10 +65,10 @@ class QToggle(QCheckBox):
         self.stateChanged.connect(self.start_transition)
         self._user_checked = False  # Introduced flag to check user-initiated changes
 
-    circle_pos = pyqtProperty(
+    circle_pos = Property(
         float, lambda self: self._circle_pos,
         lambda self, pos: (setattr(self, '_circle_pos', pos), self.update()))
-    intermediate_bg_color = pyqtProperty(
+    intermediate_bg_color = Property(
         QColor, lambda self: self._intermediate_bg_color,
         lambda self, col: setattr(self, '_intermediate_bg_color', col))
 

@@ -2,6 +2,7 @@ from setuptools import setup, find_packages, Command
 from core.globals import VERSION
 
 import os
+import sys
 import subprocess
 
 class RCCCommand(Command):
@@ -22,13 +23,13 @@ class RCCCommand(Command):
         """RCC"""
         print(f"Processing resource {source}")
         result = subprocess.run(
-            ["rcc","-g","python",source],
+            ["pyside6-rcc","-g","python",source],
             stdout=subprocess.PIPE,  
             stderr=subprocess.PIPE,  
             text=True,               
             check=False           
         )
-        data = result.stdout.replace("PySide6","PyQt6")
+        data = result.stdout
         with open(dest,"w") as f:
             f.write(data)
 
@@ -52,7 +53,7 @@ class UICCommand(Command):
         dest_folder = os.path.dirname(dest)
         os.makedirs(dest_folder,exist_ok=True)
         print(f"Processing UI {source}")
-        os.system(f"pyuic6 -x {source} -o {dest}")
+        os.system(f"pyside6-uic {source} -o {dest}")
 
     @staticmethod
     def make_ui_whole_folder(source_dir:str,dest_dir:str):
@@ -77,7 +78,9 @@ class NuitkaCompile(Command):
     def run(self):
         os.makedirs(self.build_dir,exist_ok=True)
         os.chdir(self.build_dir)
-        os.system("nuitka --onefile --windows-disable-console --enable-plugin=pyqt6 ../main.py -o zapret_gui.exe")
+        ret = os.system("nuitka --onefile --windows-console-mode=disable --assume-yes-for-downloads --enable-plugin=pyside6 ../main.py -o zapret_gui.exe")
+        if ret:
+            sys.exit(ret)
 
 if __name__ == "__main__":
     setup(

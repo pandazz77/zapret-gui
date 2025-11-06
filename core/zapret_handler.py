@@ -8,7 +8,7 @@ import atexit
 import requests
 import logging
 from enum import Enum
-from PyQt6.QtCore import QObject, pyqtSignal
+from PySide6.QtCore import QObject, Signal
 
 class ZapretStatus(Enum):
     STOPPED = 0,
@@ -18,7 +18,7 @@ class ZapretStatus(Enum):
 _instance:"ZapretHandler" = None
 
 class ZapretHandler(QObject):
-    new_status = pyqtSignal(ZapretStatus)
+    new_status = Signal(ZapretStatus)
 
     def __init__(self,bin:ZapretBinsProvider,strategy:StrategyProvider):
         super().__init__()

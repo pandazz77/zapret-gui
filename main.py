@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QFile, QTextStream
+from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QFile, QTextStream
 from ui.MainWindow import MainWindow
 from ui.resources import resources
 import sys

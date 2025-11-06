@@ -1,7 +1,9 @@
+from functools import wraps
 import subprocess
 import platform
 import queue
 import threading
+from typing import Callable
 
 
 def get_pid_by_name_windows(process_name: str) -> int | None:
@@ -9,7 +11,8 @@ def get_pid_by_name_windows(process_name: str) -> int | None:
         ['tasklist', '/FI', f'IMAGENAME eq {process_name}', '/FO', 'CSV'],
         capture_output=True,
         text=True,
-        check=True
+        check=True,
+        creationflags=subprocess.CREATE_NO_WINDOW
     )
     if result.stdout.count("\n") == 1:
         return None
@@ -28,7 +31,7 @@ class TaskQueue:
         self._tasks = queue.Queue()
         self._thread:threading.Thread = None
 
-    def add(self,target:callable,*args,**kwargs):
+    def add(self,target:Callable,*args,**kwargs):
         self._tasks.put((target,args,kwargs))
         if self._thread is None:
             self._thread = threading.Thread(target=self._task_loop,daemon=True) 
@@ -41,3 +44,15 @@ class TaskQueue:
         else:
             self._thread = None
 
+def threaded(func: Callable) -> Callable:
+    """
+    Run function/method in thread
+
+    Returns: Thread
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        thread = threading.Thread(target=func, args=args, kwargs=kwargs)
+        thread.start()
+        return thread
+    return wrapper
