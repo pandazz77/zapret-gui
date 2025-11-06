@@ -22,7 +22,7 @@ class RCCCommand(Command):
         """RCC"""
         print(f"Processing resource {source}")
         result = subprocess.run(
-            ["rcc","-g","python",source],
+            ["pyside6-rcc","-g","python",source],
             stdout=subprocess.PIPE,  
             stderr=subprocess.PIPE,  
             text=True,               
