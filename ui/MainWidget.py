@@ -1,8 +1,8 @@
 import providers.factory
 from ui.forms_uic.MainWidget import Ui_MainWidget
-from PyQt6.QtWidgets import QWidget
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import Qt
+from PySide6.QtWidgets import QWidget
+from PySide6.QtGui import QPixmap
+from PySide6.QtCore import Qt
 from core.zapret_handler import ZapretHandler, ZapretStatus
 from core.utils import TaskQueue, threaded
 import providers

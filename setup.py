@@ -28,7 +28,7 @@ class RCCCommand(Command):
             text=True,               
             check=False           
         )
-        data = result.stdout.replace("PySide6","PyQt6")
+        data = result.stdout
         with open(dest,"w") as f:
             f.write(data)
 
@@ -52,7 +52,7 @@ class UICCommand(Command):
         dest_folder = os.path.dirname(dest)
         os.makedirs(dest_folder,exist_ok=True)
         print(f"Processing UI {source}")
-        os.system(f"pyuic6 -x {source} -o {dest}")
+        os.system(f"pyside6-uic {source} -o {dest}")
 
     @staticmethod
     def make_ui_whole_folder(source_dir:str,dest_dir:str):

@@ -1,7 +1,7 @@
 from ui.forms_uic.MainWindow import Ui_MainWindow
-from PyQt6.QtWidgets import QMainWindow, QApplication
-from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
-from PyQt6.QtGui import QIcon, QAction
+from PySide6.QtWidgets import QMainWindow, QApplication
+from PySide6.QtWidgets import QSystemTrayIcon, QMenu
+from PySide6.QtGui import QIcon, QAction
 from core.globals import VERSION
 from core.zapret_handler import ZapretStatus
 from ui.resources import resources
@@ -60,7 +60,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tray_actions["show"].triggered.connect(self.show)
         self.tray_actions["exit"].triggered.connect(QApplication.quit)
         self.tray_actions["start_stop"].triggered.connect(self.main.switchControl.click)
-        tray_menu.addActions(self.tray_actions.values())
+        tray_menu.addActions(list(self.tray_actions.values()))
         self.tray.setContextMenu(tray_menu)
 
     def on_tray_activated(self,reason):

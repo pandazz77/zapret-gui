@@ -1,8 +1,8 @@
 
 import providers.factory
 from ui.forms_uic.SettingsWidget import Ui_SettingsWidget
-from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import Qt, pyqtSignal, QSettings
+from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import Qt, Signal, QSettings
 import providers
 from core.globals import settings
 from core.zapret_handler import ZapretHandler
@@ -16,8 +16,8 @@ WIN_RUN_PATH = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\
 AUTOSTART_CLI_ARGS = "--tray --start"
 
 class SettingsWidget(QWidget, Ui_SettingsWidget):
-    strategyChanged = pyqtSignal(str)
-    binsChanged = pyqtSignal(str)
+    strategyChanged = Signal(str)
+    binsChanged = Signal(str)
 
     def __init__(self):
         super().__init__()
