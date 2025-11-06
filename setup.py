@@ -77,7 +77,7 @@ class NuitkaCompile(Command):
     def run(self):
         os.makedirs(self.build_dir,exist_ok=True)
         os.chdir(self.build_dir)
-        os.system("nuitka --onefile --windows-console-mode=disable --enable-plugin=pyqt6 ../main.py -o zapret_gui.exe")
+        os.system("nuitka --onefile --windows-console-mode=disable --enable-plugin=pyside6 ../main.py -o zapret_gui.exe")
 
 if __name__ == "__main__":
     setup(
