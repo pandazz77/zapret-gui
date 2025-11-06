@@ -11,7 +11,8 @@ def get_pid_by_name_windows(process_name: str) -> int | None:
         ['tasklist', '/FI', f'IMAGENAME eq {process_name}', '/FO', 'CSV'],
         capture_output=True,
         text=True,
-        check=True
+        check=True,
+        creationflags=subprocess.CREATE_NO_WINDOW
     )
     if result.stdout.count("\n") == 1:
         return None
@@ -46,7 +47,7 @@ class TaskQueue:
 def threaded(func: Callable) -> Callable:
     """
     Run function/method in thread
-    
+
     Returns: Thread
     """
     @wraps(func)
