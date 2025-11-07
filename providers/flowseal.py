@@ -3,7 +3,7 @@ import time
 import logging
 import os
 from pathlib import Path
-from core.strategy import Strategy, StrategyProvider
+from core.strategy import StrategyProvider, StrategyWINWS, StrategyType
 from core.zapret_provider import ZapretBinsProvider
 
 
@@ -76,6 +76,7 @@ class FlowsealStrategyProvider(StrategyProvider):
 
     def __init__(self,dir:str):
         super().__init__(dir)
+        self.bundle.type = StrategyType.WINWS
         self.lists_path = os.path.join(self.dir,"lists")
         self.bins_path = os.path.join(self.dir,"bins")
 
@@ -90,7 +91,7 @@ class FlowsealStrategyProvider(StrategyProvider):
         raw_strategies = get_raw_strategies_contents(strategies_paths)
         for name, instructions_raw in raw_strategies.items():
             instructions = parse_strategy(instructions_raw,self.lists_path,self.bins_path)
-            self.strategies[name] = Strategy(instructions=instructions)
+            self.bundle.strategies[name] = StrategyWINWS(instructions)
         self.save()
 
     @property

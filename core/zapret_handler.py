@@ -1,5 +1,5 @@
 from core.zapret_provider import ZapretBinsProvider
-from core.strategy import StrategyProvider, Strategy
+from core.strategy import StrategyProvider, StrategyModelType
 from core.utils import get_pid_by_name
 import subprocess
 import threading
@@ -47,10 +47,10 @@ class ZapretHandler(QObject):
             os.kill(existing_pid,-1)
 
         self.new_status.emit(ZapretStatus.STARTING)
-        strategy: Strategy = self.strategy.strategies[strategy]
-        instructions = strategy["instructions"]
+        strategy: StrategyModelType = self.strategy.bundle.strategies[strategy]
+        instructions = strategy.instructions
         self.process = subprocess.Popen(
-            [self.bin.executable,*instructions],
+            ["sudo",self.bin.executable,*instructions],
             cwd=os.path.dirname(self.bin.executable),
             text=True,
             stdout=subprocess.PIPE,

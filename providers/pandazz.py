@@ -1,4 +1,4 @@
-from core.strategy import StrategyProvider
+from core.strategy import StrategyProvider, StrategiesBundle, StrategyType
 import core.github_utils as github
 import os
 import json
@@ -19,6 +19,7 @@ class PandazzStrategyProvider(StrategyProvider):
 
     def __init__(self,dir:str):
         super().__init__(dir)
+        self.bundle.type = StrategyType.WINWS
         self.lists_path = os.path.join(self.dir,"lists")
         self.bins_path = os.path.join(self.dir,"bins")
 
@@ -33,7 +34,7 @@ class PandazzStrategyProvider(StrategyProvider):
         strategies_raw = github.get_file_content_raw(USERNAME,REPONAME,"strategies/strategies.json",branch="master").decode('utf-8')
         path = os.path.abspath(self.dir).replace("\\","/")
         strategies_raw = strategies_raw.replace("@PATH@",path)
-        self.strategies = json.loads(strategies_raw)
+        self.bundle.strategies = StrategiesBundle.from_dict(json.loads(strategies_raw))
         self.save()
 
     @property
