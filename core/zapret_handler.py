@@ -9,6 +9,8 @@ import requests
 import logging
 from enum import Enum
 from PySide6.QtCore import QObject, Signal
+from abc import ABC, abstractmethod
+import platform
 
 class ZapretStatus(Enum):
     STOPPED = 0,
@@ -29,7 +31,6 @@ class ZapretHandler(QObject):
 
         self.bin = bin
         self.strategy = strategy
-        self.process: subprocess.Popen = None
         self.status: ZapretStatus = ZapretStatus.STOPPED
         self.logger = logging.getLogger("ZapretHandler")
 
@@ -40,6 +41,43 @@ class ZapretHandler(QObject):
     @staticmethod
     def get_instance() -> "ZapretHandler":
         return _instance
+
+    @abstractmethod
+    def start(self,strategy):
+        raise NotImplementedError
+
+    def _on_new_status(self,status:ZapretStatus):
+        self.status = status
+
+    @abstractmethod
+    def stop(self):
+        raise NotImplementedError
+    
+    def blockcheck(self,retries=5) -> bool:
+        self.logger.debug("blockchecking...")
+        for _ in range(retries):
+            try:
+                resp = requests.get("https://discord.com",timeout=3)
+            except Exception as e:
+                self.logger.info(f"blockchecking exception: {e}")
+                continue
+            self.logger.info(f"blockchecking status: {resp.status_code}")
+            if resp.status_code == 200: return True
+
+        return False
+    
+    def autosearch(self) -> str:
+        for name in self.strategy.bundle.strategies.keys():
+            self.start(name)
+            if self.blockcheck():
+                return name
+            else:
+                self.stop()
+
+class Winws(ZapretHandler):
+    def __init__(self,bin:ZapretBinsProvider,strategy:StrategyProvider):
+        super().__init__(bin,strategy)
+        self.process: subprocess.Popen = None
 
     def start(self,strategy):
         if existing_pid:= get_pid_by_name(os.path.basename(self.bin.executable)):
@@ -69,9 +107,6 @@ class ZapretHandler(QObject):
                 self.new_status.emit(ZapretStatus.STARTED)
         self.logger.info("stopped")
 
-    def _on_new_status(self,status:ZapretStatus):
-        self.status = status
-
     def stop(self):
         if self.process:
             self.process.terminate()
@@ -81,23 +116,11 @@ class ZapretHandler(QObject):
             except RuntimeError:
                 pass
 
-    def blockcheck(self,retries=5) -> bool:
-        self.logger.debug("blockchecking...")
-        for _ in range(retries):
-            try:
-                resp = requests.get("https://discord.com",timeout=3)
-            except Exception as e:
-                self.logger.info(f"blockchecking exception: {e}")
-                continue
-            self.logger.info(f"blockchecking status: {resp.status_code}")
-            if resp.status_code == 200: return True
+class Nfqws(ZapretHandler):
+    ...
 
-        return False
-    
-    def autosearch(self) -> str:
-        for name in self.strategy.strategies.keys():
-            self.start(name)
-            if self.blockcheck():
-                return name
-            else:
-                self.stop()
+def CreateHandler(bin:ZapretBinsProvider,strategy:StrategyProvider) -> ZapretHandler:
+    if platform.system() == "Windows":
+        return Winws(bin,strategy)
+    elif platform.system() == "Linux":
+        return Nfqws(bin,strategy)

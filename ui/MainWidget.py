@@ -3,7 +3,7 @@ from ui.forms_uic.MainWidget import Ui_MainWidget
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
-from core.zapret_handler import ZapretHandler, ZapretStatus
+from core.zapret_handler import ZapretHandler, ZapretStatus, CreateHandler
 from core.utils import TaskQueue, threaded
 import providers
 from core.globals import settings
@@ -20,7 +20,7 @@ class MainWidget(QWidget, Ui_MainWidget):
         self.switchControl.setText(None)
         self.switchControl.stateChanged.connect(self.on_switch_changed)
 
-        self.zapret = ZapretHandler(
+        self.zapret = CreateHandler(
             providers.factory.GetBinsProvider(settings.preffered_bins_provider),
             providers.factory.GetStrategyProvider(settings.preffered_strategy_provider)
         )

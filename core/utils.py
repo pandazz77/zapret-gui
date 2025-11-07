@@ -4,6 +4,8 @@ import platform
 import queue
 import threading
 from typing import Callable
+from PySide6.QtCore import QObject
+from abc import ABCMeta
 
 
 def get_pid_by_name_windows(process_name: str) -> int | None:
@@ -56,3 +58,6 @@ def threaded(func: Callable) -> Callable:
         thread.start()
         return thread
     return wrapper
+
+class QObjectABCMeta(type(QObject), ABCMeta):
+    pass
