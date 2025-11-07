@@ -34,3 +34,12 @@ class StrategyProvider(ABC):
     @property
     def names(self) -> list[str]:
         return list(self.strategies.keys())
+    
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        ...
+
+    @property
+    def metadata(self) -> str:
+        return "NO INFO"

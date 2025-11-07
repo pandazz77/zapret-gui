@@ -17,3 +17,12 @@ class ZapretBinsProvider(ABC):
     def available(self) -> bool:
         if not self.executable: return False
         return os.path.exists(self.executable)
+    
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        ...
+
+    @property
+    def metadata(self) -> str:
+        return "NO INFO"

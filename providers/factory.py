@@ -6,16 +6,13 @@ from core.zapret_provider import ZapretBinsProvider
 from core.globals import APPDIR
 import os
 
-FLOWSEAL = "FLOWSEAL"
-PANDAZZ = "PANDAZZ"
-
 _bins_providers = {
-    FLOWSEAL: FlowsealBinsProvider
+    FlowsealBinsProvider.NAME: FlowsealBinsProvider
 }
 
 _strategy_providers = {
-    PANDAZZ: PandazzStrategyProvider,
-    FLOWSEAL: FlowsealStrategyProvider,
+    PandazzStrategyProvider.NAME: PandazzStrategyProvider,
+    FlowsealStrategyProvider.NAME: FlowsealStrategyProvider,
 }
 
 def GetBinsProvider(name:str) -> ZapretBinsProvider:

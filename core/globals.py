@@ -3,6 +3,7 @@ import os
 import atexit
 from core.settings import Settings
 import platform
+from providers.flowseal_parser import FlowsealStrategyProvider, FlowsealBinsProvider
 
 VERSION = "0.3"
 
@@ -27,8 +28,8 @@ def setup_logging(level:str):
 
 Settings.setup(APPDIR)
 settings = Settings(
-    preffered_bins_provider="FLOWSEAL",
-    preffered_strategy_provider="FLOWSEAL",
+    preffered_bins_provider=FlowsealBinsProvider.NAME,
+    preffered_strategy_provider=FlowsealStrategyProvider.NAME,
     preffered_strategy=None
 )
 settings.load()

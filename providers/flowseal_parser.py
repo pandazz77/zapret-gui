@@ -72,6 +72,8 @@ def parse_strategy(strategy_raw:str,lists_path:str,bins_paths:str,gamefilter_fla
 
 
 class FlowsealStrategyProvider(StrategyProvider):
+    NAME = "FLOWSEAL"
+
     def __init__(self,dir:str):
         super().__init__(dir)
         self.lists_path = os.path.join(self.dir,"lists")
@@ -91,7 +93,13 @@ class FlowsealStrategyProvider(StrategyProvider):
             self.strategies[name] = Strategy(instructions=instructions)
         self.save()
 
+    @property
+    def name(self) -> str:
+        return self.NAME
+
 class FlowsealBinsProvider(ZapretBinsProvider):
+    NAME = "FLOWSEAL"
+
     def __init__(self, dir):
         super().__init__(dir)
         self.executable = Path(self.dir,"winws.exe")
@@ -102,3 +110,7 @@ class FlowsealBinsProvider(ZapretBinsProvider):
         for path in paths:
             filename = path.split("/")[-1]
             github.download_file(USERNAME,REPONAME, path,os.path.join(output_folder,filename))
+
+    @property
+    def name(self) -> str:
+        return self.NAME

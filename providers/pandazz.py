@@ -15,6 +15,8 @@ def download_folder(gh_folder,output_folder):
 
 
 class PandazzStrategyProvider(StrategyProvider):
+    NAME = "PANDAZZ"
+
     def __init__(self,dir:str):
         super().__init__(dir)
         self.lists_path = os.path.join(self.dir,"lists")
@@ -33,3 +35,7 @@ class PandazzStrategyProvider(StrategyProvider):
         strategies_raw = strategies_raw.replace("@PATH@",path)
         self.strategies = json.loads(strategies_raw)
         self.save()
+
+    @property
+    def name(self) -> str:
+        return self.NAME
