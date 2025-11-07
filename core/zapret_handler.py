@@ -55,7 +55,7 @@ class ZapretHandler(QObject):
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            creationflags=subprocess.CREATE_NO_WINDOW
+            # creationflags=subprocess.CREATE_NO_WINDOW # TODO: LINUX ALTERNATIVE
         )
         self._stdout_hook = threading.Thread(target=self._process_stdout_hook,daemon=True)
         self._stdout_hook.start()

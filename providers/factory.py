@@ -1,7 +1,7 @@
 
 from providers.flowseal import FlowsealStrategyProvider, FlowsealBinsProvider
 from providers.pandazz import PandazzStrategyProvider
-from providers.local import LocalStrategyProvider
+from providers.local import LocalStrategyProvider, LocalBinsProvider
 from core.strategy import StrategyProvider
 from core.zapret_provider import ZapretBinsProvider
 from core.globals import APPDIR
@@ -22,6 +22,14 @@ def _SetupBinsProviders():
     setupStandard(FlowsealBinsProvider,FlowsealBinsProvider.NAME)
     # =================
 
+    # LOCALS ==========
+    for dir in os.listdir(_BINS_PROVIDERS_DIR):
+        if dir not in _bins_providers:
+            fullpath = os.path.join(_BINS_PROVIDERS_DIR,dir)
+            provider = LocalBinsProvider(fullpath)
+            _bins_providers[provider.name] = provider
+    # =================
+
 def _SetupStrategiesProviders():
     # DEFAULT =========
     def setupStandard(cls,name):
@@ -33,7 +41,6 @@ def _SetupStrategiesProviders():
     # =================
 
     # LOCALS ==========
-    os.listdir(_STRATS_PROVIDERS_DIR)
     for dir in os.listdir(_STRATS_PROVIDERS_DIR):
         if dir not in _strategy_providers:
             fullpath = os.path.join(_STRATS_PROVIDERS_DIR,dir)
