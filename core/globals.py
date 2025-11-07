@@ -3,7 +3,7 @@ import os
 import atexit
 from core.settings import Settings
 import platform
-from providers.flowseal_parser import FlowsealStrategyProvider, FlowsealBinsProvider
+from providers.flowseal import FlowsealStrategyProvider, FlowsealBinsProvider
 
 VERSION = "0.3"
 
