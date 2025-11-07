@@ -49,6 +49,9 @@ def _SetupStrategiesProviders():
     # =================
 
 def SetupProviders(): # MUST BE INITIALISED
+    os.makedirs(_BINS_PROVIDERS_DIR,exist_ok=True)
+    os.makedirs(_STRATS_PROVIDERS_DIR,exist_ok=True)
+
     _SetupBinsProviders()
     _SetupStrategiesProviders()
 
