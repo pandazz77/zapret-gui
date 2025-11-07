@@ -76,7 +76,6 @@ class FlowsealStrategyProvider(StrategyProvider):
 
     def __init__(self,dir:str):
         super().__init__(dir)
-        self.bundle.type = StrategyType.WINWS
         self.lists_path = os.path.join(self.dir,"lists")
         self.bins_path = os.path.join(self.dir,"bins")
 
@@ -85,6 +84,8 @@ class FlowsealStrategyProvider(StrategyProvider):
 
     
     def update(self):
+        self.drop()
+        self.bundle.type = StrategyType.WINWS
         download_lists(self.lists_path)
         download_bins(self.bins_path)
         strategies_paths = get_strategies_paths()

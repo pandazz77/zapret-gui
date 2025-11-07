@@ -27,6 +27,7 @@ StrategyModelType = Union[StrategyWINWS, StrategyNFQWS]
 class StrategiesBundle:
     type: StrategyType
     strategies: Dict[str, StrategyModelType]
+    api: float = API
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'StrategiesBundle':
@@ -45,13 +46,15 @@ class StrategiesBundle:
         
         return cls(
             type=StrategyType(data['type']),
-            strategies=strategies
+            strategies=strategies,
+            api=data["api"] if "api" in data else 0.0
         )
     
     def to_dict(self) -> Dict[str, Any]:
         result = {
             'type': self.type.value,
-            'strategies': {}
+            'strategies': {},
+            'api': self.api
         }
         
         for key, strategy in self.strategies.items():
@@ -73,13 +76,18 @@ class StrategyProvider(ABC):
         if not os.path.exists(self.dir):
             os.mkdir(self.dir)
         self.strategies_path = os.path.join(self.dir,"strategies.json")
-        self.bundle: StrategiesBundle = StrategiesBundle(StrategyType.NONE,{})
+        self.bundle: StrategiesBundle
+        self.drop()
 
     @abstractmethod
     def update(self):
         ...
 
+    def drop(self):
+        self.bundle = StrategiesBundle(StrategyType.NONE,{},API)
+
     def save(self):
+        print("saving",self.bundle)
         with open(self.strategies_path,"w") as f:
             json.dump(self.bundle.to_dict(),f,indent=4)
 
@@ -89,7 +97,11 @@ class StrategyProvider(ABC):
 
     @property
     def available(self) -> bool:
-        return os.path.exists(self.strategies_path)
+        exists = os.path.exists(self.strategies_path)
+        if exists:
+            self.load()
+            return self.bundle.api == API
+        return False
     
     @property
     def names(self) -> list[str]:

@@ -1,0 +1,29 @@
+{
+    "type": "NFQWS",
+    "api":2.0,
+    "strategies":{
+        "general (ALT)": {
+            "nft_tables": [
+                "udp dport { 443 } counter queue num 0 bypass",
+                "udp dport { 50000-50100 } counter queue num 1 bypass",
+                "tcp dport { 80 } counter queue num 2 bypass",
+                "tcp dport { 443 } counter queue num 3 bypass"
+            ],
+            "instructions": [
+                [
+                    "--hostlist=list-general.txt",
+                    "--dpi-desync=fake",
+                    "--dpi-desync-repeats=6",
+                    "--dpi-desync-fake-quic=bin/quic_initial_www_google_com.bin"
+                ],
+                [
+                    "--ipset=ipset-discord.txt",
+                    "--dpi-desync=fake",
+                    "--dpi-desync-any-protocol",
+                    "--dpi-desync-cutoff=d3",
+                    "--dpi-desync-repeats=6"
+                ]
+            ]
+        }
+    }
+}
