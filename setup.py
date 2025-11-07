@@ -7,6 +7,7 @@ import subprocess
 
 class RCCCommand(Command):
     description = "Compile rcc"
+    user_options = []
 
     def initialize_options(self):
         self.source = "resources/resources.qrc"
@@ -36,6 +37,7 @@ class RCCCommand(Command):
 
 class UICCommand(Command):
     description = 'Compile .ui files'
+    user_options = []
 
     def initialize_options(self):
         self.ui_dir = "ui/forms"
@@ -68,6 +70,7 @@ class UICCommand(Command):
 
 class NuitkaCompile(Command):
     description = 'Compile with nuitka'
+    user_options = []
 
     def initialize_options(self):
         self.build_dir = "nuitka_build"
