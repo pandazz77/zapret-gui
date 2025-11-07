@@ -98,12 +98,13 @@ Blockcheck status: {self.zapret.blockcheck()}
             self.switchControl.click()
         self.zapret.strategy = providers.factory.GetStrategyProvider(name)
         self.checkAvailable()
+        self.fillStrategies()
 
     def on_new_bins_provider(self,name:str):
         if self.zapret.status != ZapretStatus.STOPPED:
             self.switchControl.click()
         self.zapret.bin = providers.factory.GetBinsProvider(name)
-        self.checkAvailable
+        self.checkAvailable()
 
     @property
     def choosen_strategy(self):
