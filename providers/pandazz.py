@@ -19,12 +19,10 @@ class PandazzStrategyProvider(StrategyProvider):
         super().__init__(dir)
         self.lists_path = os.path.join(self.dir,"lists")
         self.bins_path = os.path.join(self.dir,"bins")
-
-        os.makedirs(self.lists_path,exist_ok=True)
-        os.makedirs(self.bins_path,exist_ok=True)
-
     
     def update(self):
+        os.makedirs(self.lists_path,exist_ok=True)
+        os.makedirs(self.bins_path,exist_ok=True)
         download_folder("strategies/lists",self.lists_path)
         download_folder("strategies/bins",self.bins_path)
 

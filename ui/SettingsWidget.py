@@ -40,6 +40,15 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
         self.blockcheckBtn.clicked.connect(self.on_blockcheck)
         self.blockcheckStatus.setText("undefined")
         self.autostartCheck.checkStateChanged.connect(self.on_autostart_changed)
+        self.strategyUpdBtn.clicked.connect(self.on_strategy_update)
+
+    @threaded
+    def on_strategy_update(self):
+        self.setDisabled(True)
+        current_strategy = self.strategiesCombo.currentText()
+        provider = providers.factory.GetStrategyProvider(current_strategy)
+        provider.full_update()
+        self.setDisabled(False)
 
     def on_strategy_changed(self,name:str):
         settings.preffered_strategy_provider = name

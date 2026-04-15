@@ -2,6 +2,7 @@ import json
 import os
 from abc import abstractmethod, ABC
 from typing import TypedDict
+import shutil
 
 
 class Strategy(TypedDict):
@@ -18,6 +19,14 @@ class StrategyProvider(ABC):
     @abstractmethod
     def update(self):
         ...
+
+    def clear(self):
+        shutil.rmtree(self.dir)
+        os.mkdir(self.dir)
+
+    def full_update(self):
+        self.clear()
+        self.update()
 
     def save(self):
         with open(self.strategies_path,"w") as f:
