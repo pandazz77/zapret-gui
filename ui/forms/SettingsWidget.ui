@@ -94,7 +94,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>UPD</string>
+           <string>🔄</string>
           </property>
          </widget>
         </item>
@@ -134,7 +134,7 @@
         <item>
          <widget class="QPushButton" name="binsUpdBtn">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -143,7 +143,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>UPD</string>
+           <string>🔄</string>
           </property>
          </widget>
         </item>

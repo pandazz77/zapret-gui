@@ -144,3 +144,7 @@ QPushButton#switchPageBtn{
 QWidget#footer_container{
     background-color: #202020;
 }
+
+QPushButton#strategyUpdBtn, #binsUpdBtn{
+    font-size: 30px; 
+}

@@ -41,12 +41,21 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
         self.blockcheckStatus.setText("undefined")
         self.autostartCheck.checkStateChanged.connect(self.on_autostart_changed)
         self.strategyUpdBtn.clicked.connect(self.on_strategy_update)
+        self.binsUpdBtn.clicked.connect(self.on_bins_update)
 
     @threaded
     def on_strategy_update(self):
         self.setDisabled(True)
         current_strategy = self.strategiesCombo.currentText()
         provider = providers.factory.GetStrategyProvider(current_strategy)
+        provider.full_update()
+        self.setDisabled(False)
+
+    @threaded
+    def on_bins_update(self):
+        self.setDisabled(True)
+        current_bins = self.binsCombo.currentText()
+        provider = providers.factory.GetBinsProvider(current_bins)
         provider.full_update()
         self.setDisabled(False)
 
