@@ -23,11 +23,16 @@ class PandazzStrategyProvider(StrategyProvider):
     def update(self):
         os.makedirs(self.lists_path,exist_ok=True)
         os.makedirs(self.bins_path,exist_ok=True)
+        commit, date = github.get_last_commit(USERNAME,REPONAME)
         download_folder("strategies/lists",self.lists_path)
         download_folder("strategies/bins",self.bins_path)
 
         strategies_raw = github.get_file_content_raw(USERNAME,REPONAME,"strategies/strategies.json",branch="master").decode('utf-8')
         path = os.path.abspath(self.dir).replace("\\","/")
         strategies_raw = strategies_raw.replace("@PATH@",path)
-        self.strategies = json.loads(strategies_raw)
+        self._update(
+            json.loads(strategies_raw),
+            f"{commit} / {date}"
+        )
+        self._strategies_set.strategies = json.loads(strategies_raw)
         self.save()

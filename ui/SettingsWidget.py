@@ -45,6 +45,7 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
 
     @threaded
     def on_strategy_update(self):
+        ZapretHandler.get_instance().stop()
         self.setDisabled(True)
         current_strategy = self.strategiesCombo.currentText()
         provider = providers.factory.GetStrategyProvider(current_strategy)
@@ -53,6 +54,7 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
 
     @threaded
     def on_bins_update(self):
+        ZapretHandler.get_instance().stop()
         self.setDisabled(True)
         current_bins = self.binsCombo.currentText()
         provider = providers.factory.GetBinsProvider(current_bins)

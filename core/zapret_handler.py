@@ -48,9 +48,8 @@ class ZapretHandler(QObject):
 
         self.new_status.emit(ZapretStatus.STARTING)
         strategy: Strategy = self.strategy.strategies[strategy]
-        instructions = strategy["instructions"]
         self.process = subprocess.Popen(
-            [self.bin.executable,*instructions],
+            [self.bin.executable,* strategy.instructions],
             cwd=os.path.dirname(self.bin.executable),
             text=True,
             stdout=subprocess.PIPE,
