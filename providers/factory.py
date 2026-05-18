@@ -28,7 +28,10 @@ def GetStrategyProvider(name:str, loaded:bool = False) -> StrategyProvider:
     os.makedirs(path,exist_ok=True)
     provider = _strategy_providers[name](path)
     if loaded:
-        provider.load()
+        try:
+            provider.load()
+        except FileNotFoundError:
+            pass
     return provider
 
 def AvailableBinsProviders() -> list[str]:
