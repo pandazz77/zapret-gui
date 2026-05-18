@@ -93,6 +93,11 @@ QPushButton{
     color: white;
 }
 
+QPushButton:disabled {
+    background-color: #3b3b3b;
+    color: rgb(44, 44, 44);
+}
+
 QPushButton:hover{
     background-color:rgb(56, 56, 56);
 }
@@ -138,4 +143,8 @@ QPushButton#switchPageBtn{
 
 QWidget#footer_container{
     background-color: #202020;
+}
+
+QPushButton#strategyUpdBtn, #binsUpdBtn{
+    font-size: 30px; 
 }

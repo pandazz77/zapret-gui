@@ -1,4 +1,4 @@
-from core.strategy import StrategyProvider
+from core.strategy import StrategyProvider, Version
 import core.github_utils as github
 import os
 import json
@@ -19,17 +19,21 @@ class PandazzStrategyProvider(StrategyProvider):
         super().__init__(dir)
         self.lists_path = os.path.join(self.dir,"lists")
         self.bins_path = os.path.join(self.dir,"bins")
-
-        os.makedirs(self.lists_path,exist_ok=True)
-        os.makedirs(self.bins_path,exist_ok=True)
-
     
     def update(self):
+        os.makedirs(self.lists_path,exist_ok=True)
+        os.makedirs(self.bins_path,exist_ok=True)
+        commit, date = github.get_last_commit(USERNAME,REPONAME)
+        version = Version(commit,date)
         download_folder("strategies/lists",self.lists_path)
         download_folder("strategies/bins",self.bins_path)
 
         strategies_raw = github.get_file_content_raw(USERNAME,REPONAME,"strategies/strategies.json",branch="master").decode('utf-8')
         path = os.path.abspath(self.dir).replace("\\","/")
         strategies_raw = strategies_raw.replace("@PATH@",path)
-        self.strategies = json.loads(strategies_raw)
+        self._update(
+            json.loads(strategies_raw),
+            version
+        )
+        self._strategies_set.strategies = json.loads(strategies_raw)
         self.save()

@@ -1,5 +1,6 @@
 import os
 from abc import abstractmethod, ABC
+import shutil
 
 
 class ZapretBinsProvider(ABC):
@@ -12,6 +13,14 @@ class ZapretBinsProvider(ABC):
     @abstractmethod
     def update(self):
         ...
+
+    def clear(self):
+        shutil.rmtree(self.dir)
+        os.mkdir(self.dir)
+
+    def full_update(self):
+        self.clear()
+        self.update()
 
     @property
     def available(self) -> bool:
