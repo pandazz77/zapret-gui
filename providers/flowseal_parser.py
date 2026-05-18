@@ -3,9 +3,16 @@ import time
 import logging
 import os
 from pathlib import Path
-from core.strategy import Strategy, StrategyProvider
+from core.strategy import Strategy, Dict, StrategyProvider, Version
 from core.zapret_provider import ZapretBinsProvider
+from enum import Enum
 
+class GameFilter(Enum):
+    NONE = 0
+    ALL = 1
+    TCP = 2
+    UDP = 3
+    
 
 USERNAME = "Flowseal"
 REPONAME = "zapret-discord-youtube"
@@ -30,11 +37,25 @@ def get_raw_strategies_contents(paths:list[str]):
         time.sleep(0.5)
     return result
 
+def create_user_lists(output_folder:str):
+    filenames = (
+        "ipset-exclude-user.txt",
+        "list-general-user.txt",
+        "list-exclude-user.txt"
+    )
+    for name in filenames:
+        path = os.path.join(output_folder,name)
+        if not os.path.exists(path):
+            with open(path,"w") as f:
+                f.write("domain.example.abc")
+
 def download_lists(output_folder:str):
     paths = filter(lambda path: path.endswith(".txt"),github.get_files_list(USERNAME,REPONAME,"lists"))
     for path in paths:
         filename = path.split("/")[-1]
         github.download_file(USERNAME,REPONAME, path,os.path.join(output_folder,filename))
+
+    create_user_lists(output_folder)
 
 def download_bins(output_folder:str):
     paths = filter(lambda path: path.endswith(".bin"),github.get_files_list(USERNAME,REPONAME,"bin"))
@@ -46,8 +67,26 @@ def enclose_sep(path:str):
     if not path.endswith(os.path.sep): path += os.path.sep
     return path
 
-def parse_strategy(strategy_raw:str,lists_path:str,bins_paths:str,gamefilter_flag:bool=False) -> list[str]:
-    gamefilter = GAMEFILTER_ENABLED if gamefilter_flag else GAMEFILTER_DISABLED
+def parse_strategy(strategy_raw:str,lists_path:str,bins_paths:str,gamefilter_mode:GameFilter=GameFilter.NONE) -> list[str]:
+    match gamefilter_mode:
+        case GameFilter.NONE:
+            gamefilter = GAMEFILTER_DISABLED
+            gamefilter_udp = GAMEFILTER_DISABLED
+            gamefilter_tcp = GAMEFILTER_DISABLED
+        case GameFilter.ALL:
+            gamefilter = GAMEFILTER_ENABLED
+            gamefilter_udp = GAMEFILTER_ENABLED
+            gamefilter_tcp = GAMEFILTER_ENABLED
+        case GameFilter.TCP:
+            gamefilter = GAMEFILTER_ENABLED
+            gamefilter_udp = GAMEFILTER_DISABLED
+            gamefilter_tcp = GAMEFILTER_ENABLED
+        case GameFilter.UDP:
+            gamefilter = GAMEFILTER_ENABLED
+            gamefilter_udp = GAMEFILTER_ENABLED
+            gamefilter_tcp = GAMEFILTER_DISABLED
+
+
     lists_path = enclose_sep(os.path.abspath(lists_path))
     bins_paths = enclose_sep(os.path.abspath(bins_paths))
 
@@ -59,6 +98,8 @@ def parse_strategy(strategy_raw:str,lists_path:str,bins_paths:str,gamefilter_fla
 
     # replace vars
     strategy_raw = strategy_raw.replace(r"%GameFilter%",gamefilter)
+    strategy_raw = strategy_raw.replace(r"%GameFilterTCP%",gamefilter_tcp)
+    strategy_raw = strategy_raw.replace(r"%GameFilterUDP%",gamefilter_udp)
     strategy_raw = strategy_raw.replace(r"%LISTS%",lists_path)
     strategy_raw = strategy_raw.replace(r"%BIN%",bins_paths)
 
@@ -86,9 +127,19 @@ class FlowsealStrategyProvider(StrategyProvider):
         download_bins(self.bins_path)
         strategies_paths = get_strategies_paths()
         raw_strategies = get_raw_strategies_contents(strategies_paths)
+        commit, date = github.get_last_commit(USERNAME,REPONAME)
+        version = Version(commit,date)
+
+        strategies: Dict[str,Strategy] = {}
+
         for name, instructions_raw in raw_strategies.items():
             instructions = parse_strategy(instructions_raw,self.lists_path,self.bins_path)
-            self.strategies[name] = Strategy(instructions=instructions)
+            strategies[name] = Strategy(instructions)
+
+        self._update(
+            strategies,
+            version
+        )
         self.save()
 
 class FlowsealBinsProvider(ZapretBinsProvider):

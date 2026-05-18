@@ -23,10 +23,13 @@ def GetBinsProvider(name:str) -> ZapretBinsProvider:
     os.makedirs(path,exist_ok=True)
     return _bins_providers[name](path)
 
-def GetStrategyProvider(name:str) -> StrategyProvider:
+def GetStrategyProvider(name:str, loaded:bool = False) -> StrategyProvider:
     path = os.path.join(APPDIR,"providers","strategy",name)
     os.makedirs(path,exist_ok=True)
-    return _strategy_providers[name](path)
+    provider = _strategy_providers[name](path)
+    if loaded:
+        provider.load()
+    return provider
 
 def AvailableBinsProviders() -> list[str]:
     return list(_bins_providers.keys())

@@ -12,6 +12,27 @@ def get_files_list(owner:str, repo:str, path:str="", branch:str='main') -> list[
 
     return [item["path"] for item in response.json()]
 
+def get_last_commit(owner, repo) -> (str,str):
+    """
+    Returns:
+        tuple: (commit_sha, commit_date) or (None, None) if failed
+    """
+    url = f"https://api.github.com/repos/{owner}/{repo}/commits"
+    headers = {"Accept": "application/vnd.github.v3+json"}
+    
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()  # Raise error for HTTP 4xx/5xx
+    
+    commits = response.json()
+    if not commits:
+        return None, None
+    
+    latest_commit = commits[0]
+    commit_sha = latest_commit["sha"]
+    commit_date = latest_commit["commit"]["committer"]["date"]
+    
+    return commit_sha, commit_date
+
 def get_file_content_api(owner:str, repo:str, file_path:str, branch:str='main') -> bytes:
     """
         Get file content via github api.
