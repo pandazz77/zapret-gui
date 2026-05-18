@@ -3,7 +3,7 @@ import os
 import atexit
 from core.settings import Settings
 
-VERSION = "0.4"
+VERSION = "0.4.1"
 APPDIR = os.path.join(os.environ['APPDATA'],"zapret_gui")
 settings: Settings = None
 
