@@ -75,6 +75,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.stackedWidget.currentWidget() == self.main:
             # open settings widget
             self.stackedWidget.setCurrentWidget(self.settings)
+            self.settings._udpate_version_text()
             self.switchPageBtn.setText("GO BACK")
         else:
             # open main widget
