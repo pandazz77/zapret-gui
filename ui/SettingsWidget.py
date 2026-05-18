@@ -42,6 +42,7 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
         self.autostartCheck.checkStateChanged.connect(self.on_autostart_changed)
         self.strategyUpdBtn.clicked.connect(self.on_strategy_update)
         self.binsUpdBtn.clicked.connect(self.on_bins_update)
+        self._udpate_version_text()
 
     @threaded
     def on_strategy_update(self):
@@ -51,6 +52,15 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
         provider = providers.factory.GetStrategyProvider(current_strategy)
         provider.full_update()
         self.setDisabled(False)
+        self._udpate_version_text()
+
+    def _udpate_version_text(self):
+        current_strategy = self.strategiesCombo.currentText()
+        provider = providers.factory.GetStrategyProvider(current_strategy,loaded=True)
+        if provider.version:
+            self.strategiesVersion.setText(f"v{provider.version.datetime_str}")
+        else:
+            self.strategiesVersion.setText("unknown version")
 
     @threaded
     def on_bins_update(self):
@@ -65,6 +75,7 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
         settings.preffered_strategy_provider = name
         self.strategyChanged.emit(settings.preffered_strategy_provider)
         print(name)
+        self._udpate_version_text()
 
     def on_bin_changed(self,name:str):
         settings.preffered_bins_provider = name

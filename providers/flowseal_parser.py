@@ -3,7 +3,7 @@ import time
 import logging
 import os
 from pathlib import Path
-from core.strategy import Strategy, Dict, StrategyProvider
+from core.strategy import Strategy, Dict, StrategyProvider, Version
 from core.zapret_provider import ZapretBinsProvider
 from enum import Enum
 
@@ -128,6 +128,7 @@ class FlowsealStrategyProvider(StrategyProvider):
         strategies_paths = get_strategies_paths()
         raw_strategies = get_raw_strategies_contents(strategies_paths)
         commit, date = github.get_last_commit(USERNAME,REPONAME)
+        version = Version(commit,date)
 
         strategies: Dict[str,Strategy] = {}
 
@@ -137,7 +138,7 @@ class FlowsealStrategyProvider(StrategyProvider):
 
         self._update(
             strategies,
-            f"{commit} / {date}"
+            version
         )
         self.save()
 

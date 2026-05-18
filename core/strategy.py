@@ -5,6 +5,7 @@ from typing import TypedDict, List, Dict
 from .edataclasses import EDataclass
 from dataclasses import dataclass
 import shutil
+from datetime import datetime
 
 
 @dataclass
@@ -12,9 +13,22 @@ class Strategy(EDataclass):
     instructions: List[str]
 
 @dataclass
+class Version(EDataclass):
+    commit_sha: str
+    iso_timestamp: str
+
+    @property
+    def datetime(self) -> datetime:
+        return datetime.fromisoformat(self.iso_timestamp.replace('Z', '+00:00'))
+    
+    @property
+    def datetime_str(self) -> str:
+        return self.datetime.strftime("%d.%m.%Y")
+
+@dataclass
 class StrategiesSet(EDataclass):
     strategies: Dict[str,Strategy]
-    version: str|None
+    version: Version
 
 class StrategyProvider(ABC):
     def __init__(self,dir:str):
@@ -29,14 +43,14 @@ class StrategyProvider(ABC):
         return self._strategies_set.strategies
     
     @property
-    def version(self) -> str:
+    def version(self) -> Version:
         return self._strategies_set.version
 
     @abstractmethod
     def update(self):
         ...
 
-    def _update(self, strategies: Dict[str,Strategy], version: str):
+    def _update(self, strategies: Dict[str,Strategy], version: Version):
         self._strategies_set.strategies = strategies
         self._strategies_set.version = version
 
