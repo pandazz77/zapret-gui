@@ -97,10 +97,10 @@ class SettingsWidget(QWidget, Ui_SettingsWidget):
     def on_autostart_changed(self,val:Qt.CheckState):
         if val == Qt.CheckState.Checked:
             if platform.system() == "Windows":
-                if sys.executable.endswith("python.exe"):
+                if sys.argv[0].endswith(".py"):
                     executable = f"{sys.executable} {os.path.abspath(sys.argv[0])} {AUTOSTART_CLI_ARGS}"
                 else:
-                    executable = f"{sys.executable} {AUTOSTART_CLI_ARGS}"
+                    executable = f"{sys.argv[0]} {AUTOSTART_CLI_ARGS}"
                 logging.info(f"AUTOSTART ON: {executable}")
                 self.qset.setValue("zapret_gui",executable)
 

@@ -9,6 +9,8 @@ from core.globals import setup_logging
 def main() -> int:
     app = QApplication(sys.argv) 
 
+    app.setStyle("Fusion")
+
     parser = argparse.ArgumentParser(description='Zapret GUI')
     parser.add_argument(
         '--loglevel',

@@ -22,6 +22,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tray_actions: dict[str,QAction] = {}
         self._initTray()
 
+        self.setWindowIcon(self._tray_deactivated_icon)
+
         self.main.zapret.new_status.connect(self.on_new_zapret_status)
         self.settings.strategyChanged.connect(self.main.on_new_strategy_provider)
         self.settings.binsChanged.connect(self.main.on_new_bins_provider)
@@ -37,11 +39,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def on_new_zapret_status(self,status:ZapretStatus):
         if status == ZapretStatus.STOPPED:
             self.tray.setIcon(self._tray_deactivated_icon)
+            self.setWindowIcon(self._tray_deactivated_icon)
             self.tray_actions["start_stop"].setText("Start")
         elif status == ZapretStatus.STARTING:
             ...
         elif status == ZapretStatus.STARTED:
             self.tray.setIcon(self._tray_activated_icon)
+            self.setWindowIcon(self._tray_activated_icon)
             self.tray_actions["start_stop"].setText("Stop")
 
     def _initTray(self):

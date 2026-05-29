@@ -78,7 +78,7 @@ class NuitkaCompile(Command):
     def run(self):
         os.makedirs(self.build_dir,exist_ok=True)
         os.chdir(self.build_dir)
-        ret = os.system("nuitka --onefile --windows-console-mode=disable --assume-yes-for-downloads --enable-plugin=pyside6 ../main.py -o zapret_gui.exe")
+        ret = os.system("nuitka --onefile --windows-console-mode=disable --windows-icon-from-ico=../resources/images/tray_activated.ico --assume-yes-for-downloads --enable-plugin=pyside6 ../main.py -o zapret_gui.exe")
         if ret:
             sys.exit(ret)
 
